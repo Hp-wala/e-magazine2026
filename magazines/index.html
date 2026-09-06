@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Magazine Archive | English Department</title>
+    <link rel="stylesheet" href="/magazines/archive.css">
+</head>
+<body>
+    <main class="archive-shell">
+        <a class="back-link" href="/index.html">Back to magazine</a>
+        <header class="archive-header">
+            <p class="eyebrow">English Department</p>
+            <h1>Magazine Archive</h1>
+            <p>Explore the department's E-Magazines by academic year. Add a new year by copying one archive card and updating its PDF link.</p>
+        </header>
+
+        <section id="archive-grid" class="archive-grid" aria-label="Year-wise magazine collection"></section>
+    </main>
+    <script>
+        const defaultArchive = [
+            { year: '2025', title: '2025 Collection', pdf: '', editors: [] }
+        ];
+        const archiveGrid = document.getElementById('archive-grid');
+        let archiveEntries = defaultArchive;
+        try {
+            const savedEntries = JSON.parse(localStorage.getItem('english-department-magazine-archive') || 'null');
+            if (Array.isArray(savedEntries)) archiveEntries = savedEntries.filter(entry => entry.year !== '2024');
+        } catch {
+            archiveEntries = defaultArchive;
+        }
+
+        function addArchiveCard(year, title, pdf, editors = []) {
+            const card = document.createElement('article');
+            card.className = 'archive-card';
+            const yearLabel = document.createElement('div');
+            yearLabel.className = 'archive-year';
+            yearLabel.textContent = year;
+            const heading = document.createElement('h2');
+            heading.textContent = title;
+            const description = document.createElement('p');
+            description.textContent = pdf ? 'Magazine PDF available.' : 'The year folder is ready for its magazine PDF.';
+            card.append(yearLabel, heading, description);
+            if (editors.length) {
+                const editorLabel = document.createElement('p');
+                editorLabel.className = 'archive-editors';
+                editorLabel.textContent = `Editors: ${editors.join(', ')}`;
+                card.appendChild(editorLabel);
+            }
+
+            const action = document.createElement(pdf ? 'a' : 'span');
+            action.className = pdf ? 'archive-action' : 'archive-status';
+            action.textContent = pdf ? 'Open PDF' : 'PDF to be added';
+            if (pdf) {
+                action.href = pdf.startsWith('http') || pdf.startsWith('/') ? pdf : `/${pdf}`;
+                action.target = '_blank';
+                action.rel = 'noopener';
+            }
+            card.appendChild(action);
+            archiveGrid.appendChild(card);
+        }
+
+        const currentCard = document.createElement('article');
+        currentCard.className = 'archive-card archive-card-current';
+        currentCard.innerHTML = '<div class="archive-year">Current</div><h2>English Department E-Magazine</h2><p>Latest published issue.</p><a class="archive-action" href="../img/cv.pdf" target="_blank" rel="noopener">Open PDF</a>';
+        archiveGrid.appendChild(currentCard);
+        archiveEntries.forEach(entry => addArchiveCard(entry.year, entry.title, entry.pdf, entry.editors || []));
+    </script>
+</body>
+</html>

@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>English Department E-Magazine</title>
+    <link rel="stylesheet" type="text/css" href="css/base.css" />
+    <link rel="stylesheet" type="text/css" href="css/demo2.css" />
+    <link rel="stylesheet" type="text/css" href="css/portfolio.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>document.documentElement.className="js";</script>
+</head>
+<!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+<!-- Developer Modal -->
+<div id="dev-modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px) brightness(0.8); z-index:9999; justify-content:center; align-items:center; overflow:hidden;">
+  <div id="modal-content" style="position: relative; display:inline-block; max-width:90%; padding:30px 40px; border-radius: 40% 15% 40% 15%; text-align:center; background: linear-gradient(135deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5); background-size: 400% 400%; animation: igShift 8s ease infinite, blob 10s ease-in-out infinite; box-shadow:0 0 50px rgba(0,0,0,0.3); transform: scale(0); transition: transform 0.5s ease;">
+
+    <!-- Floating Particles -->
+    <canvas id="particles-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1;"></canvas>
+
+    <!-- Developer Photo -->
+    <img id="dev-photo" src="img/developer.jpg" alt="Developer Photo" style="width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:15px; cursor:pointer; position:relative; z-index:2;">
+
+    <!-- Developer Info -->
+    <h2 class="dev-title">Ritul Das</h2>
+    <div id="typed-bio"></div>
+    <p id="tagline"></p>
+
+    <!-- Close Button -->
+    <button id="close-btn" style="padding:6px 12px; margin-top:15px; border:none; background:#4285F4; color:white; border-radius:5px; cursor:pointer; transition:0.3s;">Close</button>
+  </div>
+</div>
+
+<!-- Editors Modal -->
+<div id="editor-modal" style="display:none; position: fixed; inset: 0; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px) brightness(0.8); z-index:9999; justify-content:center; align-items:center; padding: 20px; overflow:auto;">
+    <div id="editor-modal-content" class="editor-modal-content">
+        <div class="editor-particles" aria-hidden="true"></div>
+        <h2 class="dev-title">Editors</h2>
+        <p class="editor-modal-intro">The students who shape each issue of the magazine.</p>
+        <div id="editor-list" class="editor-profile-list"></div>
+        <button id="editor-close-btn" style="padding:6px 12px; margin-top:15px; border:none; background:#22a06b; color:white; border-radius:5px; cursor:pointer;">Close</button>
+    </div>
+</div>
+
+<style>
+  .dev-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px white, 0 0 20px white;
+  }
+  #typed-bio {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    font-family: 'Courier New', monospace;
+    white-space: pre-wrap;
+    color: white;
+    text-shadow: 0 0 8px rgba(255,255,255,0.7);
+  }
+  #tagline {
+    margin-top:15px;
+    font-style:italic;
+    font-size: 1rem;
+    color:white;
+    text-shadow: 0 0 8px rgba(255,255,255,0.7);
+  }
+    .text-reveal {
+        animation: textReveal .8s cubic-bezier(.22, 1, .36, 1) both;
+    }
+  
+    .text-reveal-delay {
+        animation: textReveal .8s .25s cubic-bezier(.22, 1, .36, 1) both;
+    }
+  
+    @keyframes textReveal {
+        from { opacity: 0; transform: translateY(18px); filter: blur(5px); }
+        to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+  /* Typing cursor */
+  .cursor { display: inline-block; width: 8px; background: white; margin-left:2px; animation: blink 0.7s infinite; }
+  @keyframes blink { 0%,50% {background:white;} 50%,100%{background:transparent;} }
+
+  /* Instagram gradient background animation */
+  @keyframes igShift { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+
+  /* Blob shape animation */
+  @keyframes blob {
+    0%,100% { border-radius: 40% 15% 40% 15%; }
+    25% { border-radius: 50% 25% 50% 20%; }
+    50% { border-radius: 35% 40% 35% 40%; }
+    75% { border-radius: 45% 20% 45% 25%; }
+  }
+
+  #dev-btn:hover { box-shadow: 0 0 15px #4285F4, 0 0 25px #4285F4; transform: scale(1.05); }
+  #close-btn:hover { background:#3367d6; }
+
+  /* Modal hover 3D tilt */
+  #modal-content:hover { transform: scale(1.05) rotateY(5deg) rotateX(5deg); }
+
+  /* Zoom class for photo */
+  #dev-photo {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  #dev-photo.zoomed {
+    transform: scale(1.5);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+  }
+
+    .editor-modal-content {
+        position: relative;
+        width: min(700px, 100%);
+        max-height: min(85vh, 760px);
+        overflow: auto;
+        padding: 30px 40px;
+        border-radius: 40% 15% 40% 15%;
+        text-align: center;
+        background: linear-gradient(135deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+        background-size: 400% 400%;
+        animation: igShift 8s ease infinite, blob 10s ease-in-out infinite;
+        box-shadow: 0 0 50px rgba(0,0,0,0.3);
+        transform: scale(1);
+        transition: transform 0.5s ease;
+    }
+    .editor-modal-intro { position: relative; z-index: 2; color: white; }
+    .editor-profile-list { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 18px; margin-top: 20px; }
+    .editor-profile { padding: 18px 12px; border: 1px solid rgba(255,255,255,.35); border-radius: 18px; background: rgba(255,255,255,.15); color: white; box-shadow: 0 8px 22px rgba(60, 15, 70, .2); }
+    .editor-avatar { display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto 12px; border: 3px solid rgba(255,255,255,.8); border-radius: 50%; background: rgba(255,255,255,.3); color: white; font: 700 1.4rem Arial, sans-serif; }
+    .editor-profile-name { margin: 0; color: white; font: 600 1rem Arial, sans-serif; overflow-wrap: anywhere; }
+    .editor-empty { position: relative; z-index: 2; color: white; }
+    @media (max-width: 600px) { .editor-modal-content { padding: 24px 18px; border-radius: 25% 10% 25% 10%; } }
+</style>
+
+<script>
+  // Typing Effect
+  const bioLines = [
+  " I am an English Literature student at PKC with no formal technical background, yet I have self-taught HTML, CSS, Java, Ruby, C++, Python, PHP, and Shell scripting. My studies sharpen my analytical thinking and creativity, which I apply to build practical and innovative tech solutions."];
+  const typedBio = document.getElementById("typed-bio");
+  let lineIndex = 0, charIndex = 0, typingTimeout;
+
+  function typeLine() {
+    if (lineIndex < bioLines.length) {
+      let currentLine = bioLines[lineIndex];
+      typedBio.innerHTML = bioLines.slice(0, lineIndex).join("<br><br>") +
+        "<br><br>" + currentLine.slice(0, charIndex) + "<span class='cursor'></span>";
+      if (charIndex < currentLine.length) {
+        charIndex++;
+        let delay = /[.,!?]/.test(currentLine.charAt(charIndex - 1)) ? 400 : 50;
+        typingTimeout = setTimeout(typeLine, delay);
+      } else {
+        lineIndex++;
+        charIndex = 0;
+        typingTimeout = setTimeout(typeLine, 700);
+      }
+    } else {
+      typedBio.innerHTML = bioLines.join("<br><br>");
+    }
+  }
+
+  function resetTyping() {
+    clearTimeout(typingTimeout);
+    lineIndex = 0;
+    charIndex = 0;
+    typedBio.innerHTML = "";
+    typeLine();
+  }
+
+  // Rotating taglines
+  const taglines = ["Blending Literature & Code", "Creative Coder | Analytical Thinker", "Turning Ideas into Solutions"];
+  let tIndex = 0;
+
+  function startTaglineRotation() {
+    document.getElementById("tagline").innerText = taglines[tIndex];
+    tIndex = (tIndex + 1) % taglines.length;
+  }
+  setInterval(startTaglineRotation, 3000);
+
+  // Modal logic
+  const devBtn = document.getElementById("dev-btn");
+  const devModal = document.getElementById("dev-modal");
+  const modalContent = document.getElementById("modal-content");
+  const closeBtn = document.getElementById("close-btn");
+  const devPhoto = document.getElementById("dev-photo");
+
+  devBtn.onclick = () => {
+    devModal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    devPhoto.classList.remove("zoomed"); // reset photo zoom
+    resetTyping(); // restart typing each time modal opens
+    setTimeout(() => { modalContent.style.transform = "scale(1)"; }, 50);
+  };
+
+  closeBtn.onclick = () => {
+    modalContent.style.transform = "scale(0)";
+    devPhoto.classList.remove("zoomed"); // reset zoom
+    setTimeout(() => { devModal.style.display = "none"; document.body.style.overflow = "auto"; }, 500);
+  };
+
+  window.onclick = (e) => { if (e.target == devModal) closeBtn.onclick(); };
+
+  // Zoom photo toggle
+  devPhoto.onclick = function () {
+    this.classList.toggle("zoomed");
+  };
+
+  // Particle canvas
+  const canvas = document.getElementById("particles-canvas");
+  const ctx = canvas.getContext("2d");
+  let particles = [];
+
+  function resizeCanvas() { 
+    canvas.width = modalContent.offsetWidth; 
+    canvas.height = modalContent.offsetHeight; 
+  }
+  window.addEventListener('resize', resizeCanvas); 
+  resizeCanvas();
+
+  for (let i = 0; i < 50; i++) { 
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 3 + 1,
+      dx: (Math.random() - 0.5) * 1.5,
+      dy: (Math.random() - 0.5) * 1.5
+    }); 
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let p of particles) {
+      p.x += p.dx; 
+      p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
+      ctx.fill();
+    }
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+</script>
+
+<script>
+    const editorButton = document.getElementById('editor-btn');
+    const editorModal = document.getElementById('editor-modal');
+    const editorCloseButton = document.getElementById('editor-close-btn');
+
+    editorButton.onclick = () => {
+        const editorList = document.getElementById('editor-list');
+        let editors = [];
+        try {
+            editors = JSON.parse(localStorage.getItem('english-department-editors') || '[]');
+        } catch {
+            editors = [];
+        }
+        editorList.replaceChildren();
+        if (!editors.length) {
+            const empty = document.createElement('p');
+            empty.className = 'editor-empty';
+            empty.textContent = 'No editors added yet.';
+            editorList.appendChild(empty);
+        } else {
+            editors.forEach((name, index) => {
+                const profile = document.createElement('article');
+                profile.className = 'editor-profile';
+                profile.style.animationDelay = `${index * 120}ms`;
+                const avatar = document.createElement('div');
+                avatar.className = 'editor-avatar';
+                avatar.textContent = name.split(/\s+/).map(word => word[0]).slice(0, 2).join('').toUpperCase();
+                const label = document.createElement('p');
+                label.className = 'editor-profile-name';
+                label.textContent = name;
+                profile.append(avatar, label);
+                editorList.appendChild(profile);
+            });
+        }
+        editorModal.style.display = 'flex';
+    };
+
+    editorCloseButton.onclick = () => {
+        editorModal.style.display = 'none';
+    };
+
+    editorModal.onclick = event => {
+        if (event.target === editorModal) editorModal.style.display = 'none';
+    };
+</script>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+<body class="demo-2">
+    <!-- Navigation -->    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#experience" class="nav-link">Gallery</a></li>
+                <li><a href="#cv" class="nav-link">Magazine</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="true" aria-controls="site-navigation">Close menu</button>
+            <div class="header-tools" aria-label="People information">
+                <button id="dev-btn" type="button">Developers</button>
+                <button id="editor-btn" type="button">Editors</button>
+            </div>
+            <div id="site-navigation" class="hamburger" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Canvas Background -->
+        <div class="content content--canvas">
+            <!-- Animated background will be rendered here -->
+        </div>        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">                
+                <h1 class="hero-title">Welcome to <span class="highlight metallic-blue-text">English Department's  E - Magazine</E-></span></h1>
+                <p class="hero-subtitle"><span class="metallic-blue-text">Celebrating Literature, Creativity & Expression</span>  <span class="metallic-silver-text"></span></p>
+                <p class="hero-description">This e-magazine of the <strong>English Department of Pub Kamrup College</strong>, is a platform to explore ideas, creativity, and voices of literature. 
+It reflects our cultural spirit where students weave words into stories, poems, essays, and critical reflections that inspire and connect.
+</p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary">Read Articles</a>
+                    <a href="#contact" class="btn btn-secondary">Meet the Contributors</a>
+                    <a href="magazines/index.html" class="btn btn-tertiary">Browse All Magazines</a>
+                    <a href="https://photos.app.goo.gl/UavGXcVc1q1JEyBy5" target="_blank" rel="noopener" class="btn btn-gallery-teachers">Teachers Gallery</a>
+                    <a href="https://photos.app.goo.gl/4tZBduecqJw48rVK8" target="_blank" rel="noopener" class="btn btn-gallery-students">Students Gallery</a>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <div class="scroll-arrow"></div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="container">
+                <h2 class="section-title">About us </h2>
+                <div class="about-content">
+                    <div class="about-text blur-bg">
+                        <p>The <strong class="metallic-blue-text">English Department</strong> of 
+          <strong>Pub Kamrup College</strong> has long been a hub of 
+          <strong>literature, culture, and critical thought</strong>. 
+          Through teaching and creativity, the department nurtures a love 
+          for language, expression, and imagination. </p>
+                       <p>
+          Our goal is to provide a platform where creativity meets insight, 
+          and where every contribution becomes a part of our shared journey 
+          in literature and life.
+        </p>
+                        <p>As part of the <strong class="metallic-text">English Department of Pub Kamrup College</strong>, this e-magazine serves as a collective space where students and teachers share their voices through literature, culture, and critical thought, keeping alive the spirit of creativity and expression.</p>
+
+                        <div class="about-stats">
+                            <div class="stat">
+                                <span class="stat-number metallic-blue-text">Creativity</span>
+                                <span class="stat-label">Voives of literature</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number metallic-text">E-Magazine</span>
+                                <span class="stat-label">Pub Kamrup College • English Dept.</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number metallic-silver-text">Literature</span>
+                                <span class="stat-label">Shaping Thoughts, Inspiring Minds</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <div class="container">
+                <h2 class="section-title">Our Collection</h2>                <div class="projects-grid">                    <div class="project-card">
+                        <div class="card-inner">
+                            <div class="project-image">
+                                <img src="img/Rescue_Bot.png" alt="Mine Rescue Robot" style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 8px;">
+                            </div>
+                            <div class="project-content">
+                            <h3 class="project-title metallic-silver-text">Whispers of Poetry</h3>
+                            <p class="project-description"> “Poetry is the spontaneous overflow of powerful feelings arrising out of emotions recollected in tranquility” – Wordsworth.  
+    <br><br>
+    <em>Whispers of Poetry</em> is a creative corner where words bloom with rhythm and grace. Here, students of Pub Kamrup College let their voices wander through verses of love, longing, and life. Inspired by the eternal echoes of Romantic poets, this space captures imagination, emotion, and dreams that speak gently to the soul. 
+</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Melancholy</span>
+                                <span class="tech-tag">Solitude</span>
+                                <span class="tech-tag">Echoes</span>
+                                <span class="tech-tag">Ethereal</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://en.wikipedia.org/wiki/Sonnet_18" target="_blank" class="project-link">Tap to Explore</a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="card-inner">
+                            <div class="project-image">
+                                <img src="img/statuswindow_landing_page.jpg" alt="Literary portrait for Echoes of Thought" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                            </div>                        
+                            <div class="project-content">
+                            <h3 class="project-title metallic-silver-text">Echoes of Thought</h3>
+<p class="project-description">
+“Shall I compare thee to a summer's day? Thou art more lovely and more temperate.” – William Shakespeare  
+<br><br>
+<em>Echoes of Thought</em> is a literary corner where the voices of English Department student's merge with the timeless brilliance of poets like Shakespeare, Keats, and Wordsworth. Through essays, stories, and reflections, imagination takes flight, emotions find expression, and thoughts weave together, creating a tapestry that speaks to every heart.
+</p>
+<div class="project-tech">
+    <span class="tech-tag">Shakespearean</span>
+    <span class="tech-tag">Romantic</span>
+    <span class="tech-tag">Imagination</span>
+    <span class="tech-tag">Expression</span>
+</div>
+
+                            <div class="project-links">
+                                <a href="https://en.wikipedia.org/wiki/Samuel_Taylor_Coleridge" target="_blank" class="project-link">Go Deeper</a>
+                                <a href="#" target="_blank" class="project-link"></a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">      
+                        <div class="card-inner">        
+                            <div class="project-image">
+                                <img src="img/WhatsApp Image 2026-09-06 at 8.12.53 PM.jpeg" alt="Literature collage for Literary Legends" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                            </div>                        <div class="project-content">
+                            <h3 class="project-title metallic-text">Literary Legends</h3>
+                            <p class="project-description">“Some are born great, some achieve greatness, and some have greatness thrust upon them.” – William Shakespeare  
+<br><br>
+<em>Literary Legends</em> explores the lives, works, and inspirations of classic and modern writers who shaped literature, from Shakespeare to Tagore, and beyond.
+</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Shakespeare</span>
+                                <span class="tech-tag">Keats</span>
+                                <span class="tech-tag">Tagore</span>
+                                <span class="tech-tag">Analysis</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://en.wikipedia.org/wiki/English_literature" target="_blank" class="project-link">Dive In</a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <div class="container">
+                <h2 class="section-title">Department Highlights</h2>              
+                  <div class="skills-grid">
+                    <div class="skill-category">
+                        <div class="card-inner">
+                            <h3 class="skill-category-title">Achievements</h3>
+                            <div class="skills-list">
+                            <span class="skill-item">Student Research Papers</span>
+                            <span class="skill-item">Literary Competitions</span>
+                            <span class="skill-item">Workshops & Seminars</span>
+                            <span class="skill-item">Awards Won</span>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <div class="card-inner">
+                            <h3 class="skill-category-title">Upcoming Events</h3>
+                            <div class="skills-list">
+                                <span class="skill-item">Poetry Reading</span>
+                                <span class="skill-item">Drama Festival</span>
+                                <span class="skill-item">Book Fair</span>
+                                <span class="skill-item">Circuit Design</span>
+                                <span class="skill-item">Cultural Exchange</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <div class="card-inner">
+                            <h3 class="skill-category-title">Creative Writing</h3>
+                            <div class="skills-list">
+                                <span class="skill-item">Short Stories</span>
+                               <span class="skill-item">Critical Analysis</span>
+                               <span class="skill-item">Poetry</span>
+                                      <span class="skill-item">Short Stories</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <div class="card-inner">
+                            <h3 class="skill-category-title">Web Technologies & Tools </h3>
+                            <div class="skills-list">
+                                <span class="skill-item">Html</span>
+                                <span class="skill-item">CSS</span>
+                                <span class="skill-item">Javascript</span>
+                                <span class="skill-item">Ruby</span>
+                                <span class="skill-item">cv</span>
+                                <span class="skill-item">pdf</span>
+                                <span class="skill-item">Shell</span>
+                                <span class="skill-item">TypeScript</span>
+                                <span class="skill-item">PHP</span>
+                                <span class="skill-item">SQL</span>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+    </section>      <!-- Department Team Section -->
+<section id="experience" class="section">
+    <div class="container">
+        <h2 class="section-title metallic-blue-text">Together Towards Innovation</h2>
+        <div class="experience-content">
+            <div class="experience-card">
+                <!-- Team Image -->
+                <div class="experience-image">
+                    <img src="img/ChatGPT Image Sep 5, 2025, 12_36_13 AM.png" 
+                         alt="Department Team" loading="lazy">
+                </div>
+
+                <!-- Team Details -->
+                <div class="experience-details">
+                    <div class="experience-summary">
+                       <p>
+   Our <strong class="metallic-text">Photo Gallery</strong> is a vibrant collection of cherished <strong>moments</strong> and <strong>memories</strong> that reflect the true spirit of our department. From creative events and academic milestones to cultural celebrations and teamwork, every frame tells a story of <strong>innovation</strong>, <strong>growth</strong>, and <strong>togetherness</strong>.  
+</p>
+<p>
+      
+
+
+<p> Click the links below to explore our gallery:</p>
+
+                        <a href="https://photos.app.goo.gl/UavGXcVc1q1JEyBy5" 
+                           target="_blank" 
+                           class="project-link" 
+                          style="
+      display: inline-block;               /* Make it behave like a button */
+      margin: 10px 0;                      /* Space above and below */
+      padding: 12px 25px;                  /* Inner spacing */
+      background: linear-gradient(135deg, #610496, #8317b1, #ad3b6e, #af34af, #515bd4);
+      color: white;                        /* Text color */
+      font-size: 16px;                     /* Text size */
+      font-weight: bold;                   /* Bold text */
+      font-family: Arial, sans-serif;      /* Font family */
+      border-radius: 25px;                 /* Rounded corners */
+      border: none;                        /* No border */
+      text-decoration: none;               /* Remove underline */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Depth for clickability */
+      text-align: center;                  /* Center text */
+      transition: all 0.3s ease;           /* Smooth hover animation */
+   "
+   onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)';"
+   onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';"
+> 
+                           Teachers’ Gallery
+                        
+                        <a href="https://photos.app.goo.gl/4tZBduecqJw48rVK8" 
+                           target="_blank" 
+                           class="project-link" 
+                          style="
+      display: inline-block;               /* Make it behave like a button */
+      margin: 10px 0;                      /* Space above and below */
+      padding: 12px 25px;                  /* Inner spacing */
+      background: linear-gradient(135deg, #610496, #8317b1, #ad3b6e, #af34af, #515bd4);
+      color: white;                        /* Text color */
+      font-size: 16px;                     /* Text size */
+      font-weight: bold;                   /* Bold text */
+      font-family: Arial, sans-serif;      /* Font family */
+      border-radius: 25px;                 /* Rounded corners */
+      border: none;                        /* No border */
+      text-decoration: none;               /* Remove underline */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Depth for clickability */
+      text-align: center;                  /* Center text */
+      transition: all 0.3s ease;           /* Smooth hover animation */
+   "
+   onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)';"
+   onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';"
+> 
+                            Department Gallery 
+                        </a>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+        <!-- CV Section -->
+        <section id="cv" class="section">
+            <div class="container">
+                <h2 class="section-title metallic-blue-text">English Department E-Magazine</h2>
+                <div class="cv-content">
+                    <div class="cv-text">
+                        <p>Download our <strong class="metallic-text">English Department E-Magazine</strong> to explore the creativity, imagination, and literary talents of our students. Stay updated with the latest poems, stories, essays, and reflections from Pub Kamrup College.</p>
+                        <a class="project-link" href="magazines/index.html">Browse the year-wise magazine archive</a>
+
+                    </div>
+                    
+                    <div class="cv-container">
+                        <!-- CV Viewer -->
+                        <div class="cv-viewer">
+                            <div class="cv-header">
+                                <h3 class="cv-title">English Department E-Magazine</h3>
+                                <div class="cv-actions desktop-only">
+                                    <button onclick="downloadCV()" class="btn btn-primary cv-download-btn">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                        </svg>
+                                       Click to Download Magazine
+                                    </button>
+                                    <button onclick="openCVFullscreen()" class="btn btn-secondary cv-fullscreen-btn">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                                        </svg>
+                                        Click to Full View
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- PDF Iframe for Desktop -->
+                            <div class="cv-pdf-container desktop-only">
+                                <iframe 
+                                    src="img/cv.pdf#toolbar=0&navpanes=0&scrollbar=0" 
+                                    data-magazine-src="img/cv.pdf#toolbar=0&navpanes=0&scrollbar=0"
+                                    class="cv-iframe"
+                                    title="English Department CV"
+                                    loading="lazy">
+                                </iframe>
+                                <div class="cv-loading">
+                                    <div class="loading-spinner"></div>
+                                    <p>Loading Magazine...</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Mobile-friendly fallback -->
+                            <div class="cv-mobile-fallback mobile-only">
+                                <div class="cv-mobile-content">
+                                    <div class="cv-mobile-icon">
+                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                        </svg>
+                                    </div>
+                                    <h4 class="metallic-silver-text">CV Preview</h4>
+                                    <p>On mobile devices, CV preview is limited. View in full screen or download the PDF for the best experience.</p>
+                                    
+                                    <div class="mobile-cv-actions">
+                                        <button onclick="openCVFullscreen()" class="btn btn-secondary mobile-view-btn">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                                            </svg>
+                                           Click to View Full Magazine
+                                        </button>
+                                        <button onclick="downloadCV()" class="btn btn-primary mobile-download-btn">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                            </svg>
+                                            Click to Download Magazine
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="section-title metallic-text">Get in Touch with Us</h2>
+                <div class="contact-content">
+                    <div class="contact-text">
+                         <p>We'd love to hear from students, faculty, and literature enthusiasts! Share your ideas, submit contributions, or ask questions about our <strong>English Department E-Magazine</strong>.</p>
+                        <p class="contact-subtitle">Click any contact method below to connect with us, or use the copy button to save the details.</p>
+                      </div>
+                    </div>                    
+                    <div class="contact-methods">
+                        <div class="contact-method" onclick="window.location.href='mailto:rituldas340@gmail.com'">
+                            <div class="contact-icon-wrapper">
+                                <span class="contact-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2zM5 18v2h14v-2H5z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">Email</span>
+                                <span class="contact-value">rituldas340@gmail.com</span>
+                            </div>
+                            <button class="copy-btn" onclick="event.stopPropagation(); copyToClipboard('rituldas340@gmail.com', this)" title="Copy email">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                            </button>
+                        </div>                       
+                         <div class="contact-method" onclick="window.open('https://www.instagram.com/ritul_009_//', '_blank')">
+                            <div class="contact-icon-wrapper">
+                                <span class="contact-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">Instagram</span>
+                                <span class="contact-value">https://www.instagram.com/ritul_009_/</span>
+                            </div>
+                            <button class="copy-btn" onclick="event.stopPropagation(); copyToClipboard('https://www.instagram.com/ritul_009_/', this)" title="https://www.instagram.com/ritul_009_/">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="contact-method" onclick="window.open('https://web.telegram.org/a/', '_blank')">
+                            <div class="contact-icon-wrapper">
+                                <span class="contact-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">Telegram</span>
+                                <span class="contact-value">https://web.telegram.org/a/</span>
+                            </div>
+                            <button class="copy-btn" onclick="event.stopPropagation(); copyToClipboard('https://web.telegram.org/a/', this)" title="https://web.telegram.org/a/">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; <span id="year"></span> Ritul Das. All rights reserved.</p>
+        <p>Designed and curated by the English Department students.</p>
+        <p>Developed by Ritul Das from english Department</p>
+        <a class="admin-login-link" href="admin.html">Admin Login</a>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+
+    <!-- Scripts -->
+    <script>
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        const headerTools = document.querySelector('.header-tools');
+
+        navToggle.addEventListener('click', () => {
+            const collapsed = document.body.classList.toggle('navigation-collapsed');
+            navToggle.setAttribute('aria-expanded', String(!collapsed));
+            navToggle.textContent = collapsed ? 'Open menu' : 'Close menu';
+            navMenu.setAttribute('aria-hidden', String(collapsed));
+            headerTools.setAttribute('aria-hidden', String(collapsed));
+        });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.body.classList.remove('navigation-collapsed');
+                navToggle.setAttribute('aria-expanded', 'true');
+                navToggle.textContent = 'Close menu';
+                navMenu.setAttribute('aria-hidden', 'false');
+                headerTools.setAttribute('aria-hidden', 'false');
+            });
+        });
+
+        // Copy to clipboard functionality
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Change button appearance to show success
+                const svgIcon = button.querySelector('svg');
+                const originalSVG = svgIcon.outerHTML;
+                
+                button.classList.add('copied');
+                svgIcon.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    svgIcon.outerHTML = originalSVG;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Show success feedback
+                const svgIcon = button.querySelector('svg');
+                const originalSVG = svgIcon.outerHTML;
+                
+                button.classList.add('copied');
+                svgIcon.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+                
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    svgIcon.outerHTML = originalSVG;
+                }, 2000);
+            });
+        }
+
+        // Scroll Animation Observer
+        class ScrollAnimator {
+            constructor() {
+                this.observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+                this.init();
+            }
+
+            init() {
+                // Create intersection observer
+                this.observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            this.animateElement(entry.target);
+                        }
+                    });
+                }, this.observerOptions);
+
+                // Observe all sections and cards
+                this.observeElements();
+            }
+
+            observeElements() {
+                // Observe sections
+                const sections = document.querySelectorAll('.section');
+                sections.forEach(section => {
+                    section.style.opacity = '0';
+                    section.style.transform = 'translateY(30px)';
+                    this.observer.observe(section);
+                });
+
+                // Observe individual cards with stagger effect
+                const cards = document.querySelectorAll('.project-card, .skill-category, .cv-viewer');
+                cards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                    card.dataset.delay = index * 100; // Stagger animation
+                    this.observer.observe(card);
+                });
+
+                // Observe stats
+                const stats = document.querySelectorAll('.stat');
+                stats.forEach((stat, index) => {
+                    stat.style.opacity = '0';
+                    stat.style.transform = 'translateY(20px)';
+                    stat.dataset.delay = index * 150;
+                    this.observer.observe(stat);
+                });
+
+                // Observe contact methods
+                const contactMethods = document.querySelectorAll('.contact-method');
+                contactMethods.forEach((method, index) => {
+                    method.style.opacity = '0';
+                    method.style.transform = 'translateY(30px)';
+                    method.dataset.delay = index * 100;
+                    this.observer.observe(method);
+                });
+            }
+
+            animateElement(element) {
+                const delay = parseInt(element.dataset.delay) || 0;
+                
+                setTimeout(() => {
+                    element.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                    element.classList.add('fade-in-up');
+                }, delay);
+
+                // Unobserve after animation
+                this.observer.unobserve(element);
+            }
+        }
+
+        // Immediate background setup for faster perceived loading
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize scroll animations
+            const scrollAnimator = new ScrollAnimator();
+            
+            const canvasContainer = document.querySelector('.content--canvas');
+            if (canvasContainer && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                // Small delay to let page render first
+                setTimeout(() => {
+                    // Load animation scripts only after DOM is ready
+                    const scripts = ['js/noise.min.js', 'js/util.js', 'js/swirl.js'];
+                    let loadedScripts = 0;
+                    
+                    scripts.forEach(src => {
+                        const script = document.createElement('script');
+                        script.src = src;
+                        script.onload = () => {
+                            loadedScripts++;
+                            if (loadedScripts === scripts.length) {
+                                // All scripts loaded, initialize animation
+                                if (typeof setup === 'function') {
+                                    setup();
+                                }
+                            }
+                        };
+                        document.head.appendChild(script);
+                    });
+                }, 100);
+            }
+
+            // CV iframe loading handling with error handling
+            const cvIframe = document.querySelector('.cv-iframe');
+            const cvLoading = document.querySelector('.cv-loading');
+
+            const storedMagazine = localStorage.getItem('english-department-magazine-pdf');
+            let activeMagazineUrl = '';
+
+            const normalizeMagazineUrl = url => {
+                if (!url || !url.startsWith('data:')) return url;
+                const [metadata, encodedData] = url.split(',', 2);
+                const binary = atob(encodedData);
+                const bytes = new Uint8Array(binary.length);
+                for (let index = 0; index < binary.length; index++) bytes[index] = binary.charCodeAt(index);
+                return URL.createObjectURL(new Blob([bytes], { type: metadata.split(':')[1].split(';')[0] }));
+            };
+
+            const setMagazineUrl = url => {
+                if (!url) return;
+                activeMagazineUrl = normalizeMagazineUrl(url);
+                cvIframe.src = `${activeMagazineUrl}#toolbar=0&navpanes=0&scrollbar=0`;
+                document.querySelectorAll('.cv-download-btn, .mobile-download-btn').forEach(button => {
+                    button.dataset.magazineUrl = activeMagazineUrl;
+                });
+            };
+
+            if (storedMagazine) {
+                setMagazineUrl(storedMagazine);
+            }
+            
+            if (cvIframe && cvLoading) {
+                cvIframe.addEventListener('load', function() {
+                    cvLoading.style.opacity = '0';
+                    setTimeout(() => {
+                        cvLoading.style.display = 'none';
+                    }, 300);
+                });
+                
+                cvIframe.addEventListener('error', function() {
+                    cvLoading.innerHTML = `
+                        <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" style="color: #f59e0b; margin-bottom: 1rem;">
+                                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17A1,1 0 0,1 11,16A1,1 0 0,1 12,15A1,1 0 0,1 13,16A1,1 0 0,1 12,17M12,14A1,1 0 0,1 11,13V8A1,1 0 0,1 12,7A1,1 0 0,1 13,8V13A1,1 0 0,1 12,14Z"/>
+                            </svg>
+                            <p style="color: var(--text-secondary); margin: 0;">PDF preview not available. Please download the CV.</p>
+                        </div>
+                    `;
+                });
+                
+                // Fallback: hide loading after 5 seconds
+                setTimeout(() => {
+                    if (cvLoading.style.display !== 'none') {
+                        cvLoading.style.opacity = '0';
+                        setTimeout(() => {
+                            cvLoading.style.display = 'none';
+                        }, 300);
+                    }
+                }, 5000);
+            }
+
+            // CV Functions with better error handling
+            window.downloadCV = function() {
+                try {
+                    // Create download link
+                    const link = document.createElement('a');
+                    link.href = document.querySelector('.cv-download-btn')?.dataset.magazineUrl || 'img/cv.pdf';
+                    link.download = 'English Department E-magazine.pdf';
+                    link.target = '_blank';
+                    
+                    // Trigger download
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Show download feedback
+                    const downloadBtns = document.querySelectorAll('.cv-download-btn, .mobile-download-btn');
+                    downloadBtns.forEach(btn => {
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = `
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            </svg>
+                            Downloaded!
+                        `;
+                        btn.style.background = 'linear-gradient(135deg, #4ade80, #22c55e)';
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.style.background = '';
+                        }, 3000);
+                    });
+                } catch (error) {
+                    console.error('Download failed:', error);
+                    // Fallback - open in new tab
+                    window.open(document.querySelector('.cv-download-btn')?.dataset.magazineUrl || 'img/cv.pdf', '_blank');
+                }
+            };
+
+            window.openCVFullscreen = function() {
+                const magazineUrl = document.querySelector('.cv-download-btn')?.dataset.magazineUrl || 'img/cv.pdf';
+
+                function openMagazine(url) {
+                    function showInlineViewer(viewerUrl) {
+                        const viewer = document.createElement('div');
+                        viewer.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.94);display:flex;flex-direction:column;padding:1rem;';
+                        const close = document.createElement('button');
+                        close.type = 'button';
+                        close.textContent = 'Close magazine';
+                        close.style.cssText = 'align-self:flex-end;margin-bottom:.75rem;padding:.7rem 1rem;border:0;border-radius:6px;background:#7ce0c3;color:#06251c;font-weight:700;cursor:pointer;';
+                        const frame = document.createElement('iframe');
+                        frame.src = viewerUrl;
+                        frame.title = 'Full English Department E-Magazine';
+                        frame.style.cssText = 'width:100%;height:100%;border:0;background:white;';
+                        close.onclick = () => viewer.remove();
+                        viewer.append(close, frame);
+                        document.body.appendChild(viewer);
+                    }
+
+                    if (!url.startsWith('data:')) {
+                        const popup = window.open('', '_blank');
+                        if (popup) {
+                            popup.location.href = url;
+                        } else {
+                            showInlineViewer(url);
+                        }
+                        return;
+                    }
+
+                    const [metadata, encodedData] = url.split(',', 2);
+                    const binary = atob(encodedData);
+                    const bytes = new Uint8Array(binary.length);
+                    for (let index = 0; index < binary.length; index++) bytes[index] = binary.charCodeAt(index);
+                    const blobUrl = URL.createObjectURL(new Blob([bytes], { type: metadata.split(':')[1].split(';')[0] }));
+                    const popup = window.open('', '_blank');
+                    if (popup) {
+                        popup.location.href = blobUrl;
+                        setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+                    } else {
+                        showInlineViewer(blobUrl);
+                    }
+                }
+
+                try {
+                    // Open CV in new tab for better viewing
+                    openMagazine(magazineUrl);
+                    
+                    // Show feedback for mobile view button
+                    const viewBtns = document.querySelectorAll('.mobile-view-btn, .cv-fullscreen-btn');
+                    viewBtns.forEach(btn => {
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = `
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            </svg>
+                            Opening CV...
+                        `;
+                        btn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.style.background = '';
+                        }, 2000);
+                    });
+                } catch (error) {
+                    console.error('Failed to open CV:', error);
+                    // Show error message
+                    alert('Unable to open CV. Please try downloading it instead.');
+                }
+            };
+        });
+    </script>
+    <script>
+        // Reliable fallback handlers for the header people panels.
+        document.addEventListener('DOMContentLoaded', () => {
+            const developerButton = document.getElementById('dev-btn');
+            const developerModal = document.getElementById('dev-modal');
+            const developerContent = document.getElementById('modal-content');
+            const developerBio = document.getElementById('typed-bio');
+            const developerTagline = document.getElementById('tagline');
+            const developerClose = document.getElementById('close-btn');
+            const editorButton = document.getElementById('editor-btn');
+            const editorModal = document.getElementById('editor-modal');
+            const editorClose = document.getElementById('editor-close-btn');
+            const editorContent = document.getElementById('editor-modal-content');
+
+            const closeDeveloperModal = () => {
+                if (!developerModal) return;
+                if (developerContent) developerContent.style.transform = 'scale(0)';
+                setTimeout(() => {
+                    developerModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 500);
+            };
+
+            if (developerButton && developerModal) {
+                developerButton.addEventListener('click', () => {
+                    developerModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                    if (developerContent) {
+                        developerContent.style.transform = 'scale(0)';
+                        requestAnimationFrame(() => {
+                            developerContent.style.transform = 'scale(1)';
+                        });
+                    }
+                    if (developerBio) {
+                        developerBio.textContent = 'I am an English Literature student at PKC with no formal technical background, yet I have self-taught HTML, CSS, Java, Ruby, C++, Python, PHP, and Shell scripting. My studies sharpen my analytical thinking and creativity, which I apply to build practical and innovative tech solutions.';
+                    }
+                    if (developerBio) {
+                        developerBio.classList.remove('text-reveal');
+                        void developerBio.offsetWidth;
+                        developerBio.classList.add('text-reveal');
+                    }
+                    if (developerTagline) {
+                        developerTagline.classList.remove('text-reveal-delay');
+                        void developerTagline.offsetWidth;
+                        developerTagline.classList.add('text-reveal-delay');
+                        developerTagline.textContent = 'Blending Literature & Code';
+                    }
+                });
+                if (developerClose) developerClose.addEventListener('click', closeDeveloperModal);
+                developerModal.addEventListener('click', event => {
+                    if (event.target === developerModal) closeDeveloperModal();
+                });
+            }
+
+            if (editorButton && editorModal) {
+                const closeEditorModal = () => {
+                    if (editorContent) editorContent.style.transform = 'scale(0)';
+                    setTimeout(() => {
+                        editorModal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }, 500);
+                };
+
+                editorButton.addEventListener('click', () => {
+                    const editorList = document.getElementById('editor-list');
+                    let editors = [];
+                    try {
+                        editors = JSON.parse(localStorage.getItem('english-department-editors') || '[]');
+                    } catch {
+                        editors = [];
+                    }
+                    editorList.replaceChildren();
+                    if (!editors.length) {
+                        const empty = document.createElement('p');
+                        empty.className = 'editor-empty text-reveal';
+                        empty.textContent = 'No editors added yet.';
+                        editorList.appendChild(empty);
+                    } else {
+                        editors.forEach((name, index) => {
+                            const profile = document.createElement('article');
+                            profile.className = 'editor-profile';
+                            profile.style.animationDelay = `${index * 120}ms`;
+                            const avatar = document.createElement('div');
+                            avatar.className = 'editor-avatar';
+                            avatar.textContent = name.split(/\s+/).map(word => word[0]).slice(0, 2).join('').toUpperCase();
+                            const label = document.createElement('p');
+                            label.className = 'editor-profile-name';
+                            label.textContent = name;
+                            profile.append(avatar, label);
+                            editorList.appendChild(profile);
+                        });
+                    }
+                    editorModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                    if (editorContent) {
+                        editorContent.style.transform = 'scale(0)';
+                        requestAnimationFrame(() => {
+                            editorContent.style.transform = 'scale(1)';
+                        });
+                    }
+                });
+                if (editorClose) editorClose.addEventListener('click', closeEditorModal);
+                editorModal.addEventListener('click', event => {
+                    if (event.target === editorModal) closeEditorModal();
+                });
+            }
+        });
+    </script>
+    <script src="js/portfolio.js"></script>
+    <script src="js/card-tilt.js"></script>
+</body>
+</html>

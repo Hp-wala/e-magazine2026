@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Magazine Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <main class="admin-shell">
+        <a class="back-link" href="index.html">Back to magazine</a>
+        <section class="admin-panel" aria-labelledby="page-title">
+            <p class="eyebrow">English Department</p>
+            <h1 id="page-title">Magazine Admin</h1>
+            <p class="intro">Development mode: sign in to replace the magazine PDF in this browser.</p>
+
+            <form id="login-form" class="admin-form">
+                <label for="username">Username</label>
+                <input id="username" name="username" autocomplete="off" required>
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="off" required>
+                <label class="show-password"><input id="show-password" type="checkbox"> Show password</label>
+                <button type="submit">Sign in</button>
+            </form>
+
+            <section id="dashboard" class="dashboard" hidden>
+                <div class="dashboard-heading">
+                    <div>
+                        <p class="eyebrow">Authenticated</p>
+                        <h2>Replace E-Magazine</h2>
+                    </div>
+                    <button id="logout-button" class="quiet-button" type="button">Sign out</button>
+                </div>
+                <p>Select a PDF to replace the current magazine in this browser. This temporary setup is for development only.</p>
+                <form id="upload-form" class="admin-form">
+                    <label for="magazine-file">New E-Magazine PDF</label>
+                    <input id="magazine-file" name="magazine" type="file" accept="application/pdf" required>
+                    <button type="submit">Upload and publish</button>
+                </form>
+
+                <section class="management-section" aria-labelledby="editors-title">
+                    <p class="eyebrow">People</p>
+                    <h2 id="editors-title">Manage Editors</h2>
+                    <p>Add, edit, or remove the names shown in the public Editors panel.</p>
+                    <form id="editor-add-form" class="admin-form editor-add-form">
+                        <label for="editor-name">Editor name</label>
+                        <input id="editor-name" name="editorName" required>
+                        <button type="submit">Add editor</button>
+                    </form>
+                    <div id="editor-admin-list" class="editor-admin-list"></div>
+                </section>
+
+                <section class="management-section" aria-labelledby="archive-title">
+                    <p class="eyebrow">Year-wise folders</p>
+                    <h2 id="archive-title">Manage Magazine Archive</h2>
+                    <p>Add or update the year folders shown on the public Magazine Archive page.</p>
+                    <form id="archive-add-form" class="admin-form archive-add-form">
+                        <label for="archive-year">Choose year folder</label>
+                        <select id="archive-year" name="archiveYear" required>
+                            <option value="">Select a year</option>
+                            <option>2025</option>
+                            <option>2026</option>
+                            <option>2027</option>
+                            <option>2028</option>
+                            <option>2029</option>
+                            <option>2030</option>
+                            <option>2031</option>
+                            <option>2032</option>
+                            <option>2033</option>
+                            <option>2034</option>
+                            <option>2035</option>
+                        </select>
+                        <label for="archive-title-input">Collection title</label>
+                        <input id="archive-title-input" name="archiveTitle" placeholder="2026 Collection" required>
+                        <label for="archive-pdf-file">Choose PDF from device (optional)</label>
+                        <input id="archive-pdf-file" name="archivePdfFile" type="file" accept="application/pdf">
+                        <label for="archive-editors">Editors for this magazine (separate names with commas)</label>
+                        <input id="archive-editors" name="archiveEditors" placeholder="Asha Sharma, Rahul Das">
+                        <button type="submit">Add archive folder</button>
+                    </form>
+                    <div id="archive-admin-list" class="archive-admin-list"></div>
+                </section>
+            </section>
+            <p id="status" class="status" role="status" aria-live="polite"></p>
+        </section>
+    </main>
+    <script src="js/admin.js?v=dev-11"></script>
+</body>
+</html>

@@ -316,6 +316,14 @@ body {
     line-height: 1.2;
 }
 
+.hero-visual {
+    display: none;
+}
+
+.hero-visual img {
+    display: none;
+}
+
 .highlight {
     background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
     -webkit-background-clip: text;

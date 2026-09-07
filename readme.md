@@ -11,7 +11,7 @@ A modern, responsive portfolio website showcasing my projects, skills, and exper
 ## 📁 Project Structure
 
 ```
-Portfolio_Deeraj/
+RItul Das/HP-Wala
 ├── index.html              # Main HTML file
 ├── css/
 │   ├── base.css            # Base styles and reset
@@ -93,10 +93,8 @@ I'm a BTech Electronics and Communication Engineering student at **Cochin Univer
 
 ## 📞 Contact
 
-- **Email**: [deerajpmenon@gmail.com](mailto:deerajpmenon@gmail.com)
-- **LinkedIn**: [linkedin.com/in/deeraj-p-menon](https://www.linkedin.com/in/deeraj-p-menon/)
-- **GitHub**: [github.com/Deratheone](https://github.com/Deratheone)
-
+- **Email**: [rituldas340@gmail.com]
+- **Instagram**: ritull_009_
 ## 🤝 Contributing
 
 Feel free to fork this project and submit pull requests for any improvements!
@@ -113,7 +111,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 The current development-only Admin Login credentials are:
 
-- Username: `admin`
-- Password: `admin123`
+- Username: ``
+- Password: ``
 
 The dashboard stores the replacement PDF in this browser's local storage, so the public page uses it during local testing. This is not secure production authentication and does not publish files for other visitors. Before deployment, move the `ADMIN_CONFIG` object in `js/admin.js` behind a server-side authentication endpoint and connect the upload action to Google Drive through a serverless function.

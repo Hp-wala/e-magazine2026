@@ -26,3 +26,4 @@ h1 { margin: 0; font-size: clamp(2.6rem, 7vw, 5.8rem); font-weight: 500; line-he
 .archive-action { color: #06251c; background: var(--accent); text-decoration: none; }
 .archive-action:hover { background: #a0f2db; }
 .archive-status { color: var(--muted); border: 1px solid var(--line); }
+

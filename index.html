@@ -110,6 +110,190 @@
     box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
   }
 
+  .faculty-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 28px;
+  }
+
+  .faculty-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: default;
+    text-align: left;
+    color: inherit;
+    padding: 0;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  }
+
+    .faculty-card:hover {
+        border-color: rgba(124, 224, 195, 0.8);
+    }
+
+  .faculty-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .faculty-card-body {
+    padding: 18px 18px 20px;
+  }
+
+  .faculty-role {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7ce0c3;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .faculty-card-body h3 {
+    margin: 0 0 10px;
+    color: #f3f5f7;
+    font-size: 1.45rem;
+  }
+
+  .faculty-card-body p {
+    margin: 0 0 16px;
+    color: rgba(255, 255, 255, 0.76);
+    line-height: 1.6;
+  }
+
+  .faculty-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(124, 224, 195, 0.12);
+    color: #7ce0c3;
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+
+  .faculty-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(9, 15, 22, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    padding: 24px;
+  }
+
+  .faculty-modal.active {
+    display: flex;
+  }
+
+  .faculty-modal-content {
+    position: relative;
+    width: min(760px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: linear-gradient(135deg, rgba(18, 24, 33, 0.96), rgba(22, 40, 52, 0.96));
+    border: 1px solid rgba(124, 224, 195, 0.35);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.4);
+  }
+
+  .faculty-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    cursor: pointer;
+  }
+
+  .faculty-modal-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.14);
+  }
+
+  .faculty-modal-row:last-child {
+    border-bottom: none;
+  }
+
+  .faculty-modal-row strong {
+    color: #7ce0c3;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .faculty-modal-entry {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .faculty-modal-entry span,
+  .faculty-modal-entry li {
+    color: rgba(255,255,255,0.9);
+  }
+
+  .faculty-modal-entry ul {
+    margin: 0;
+    padding-left: 18px;
+    line-height: 1.7;
+  }
+
+  .faculty-detail-header {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .faculty-detail-header img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 2px solid rgba(124, 224, 195, 0.5);
+  }
+
+  .faculty-detail-header h3 {
+    margin: 0 0 8px;
+    font-size: clamp(1.7rem, 2.2vw, 2.3rem);
+    color: white;
+  }
+
+  .faculty-detail-header p {
+    margin: 0;
+    color: rgba(255,255,255,0.8);
+  }
+
+  @media (max-width: 610px) {
+    .faculty-modal-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .faculty-detail-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
     .editor-modal-content {
         position: relative;
         width: min(700px, 100%);
@@ -294,28 +478,32 @@
 <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
 <body class="demo-2">
-    <!-- Navigation -->    <nav class="navbar">
+    <!-- Navigation -->
+    <nav class="navbar">
         <div class="nav-container">
-            <ul class="nav-menu">
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#experience" class="nav-link">Gallery</a></li>
-                <li><a href="#cv" class="nav-link">Magazine</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="true" aria-controls="site-navigation">Close menu</button>
-            <div class="header-tools" aria-label="People information">
-                <button id="dev-btn" type="button">Developers</button>
-                <button id="editor-btn" type="button">Editors</button>
-            </div>
-            <div id="site-navigation" class="hamburger" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Menu <span aria-hidden="true">&#9776;</span></button>
         </div>
     </nav>
+    <div id="navigation-backdrop" class="navigation-backdrop" aria-hidden="true"></div>
+    <aside id="site-navigation" class="sidebar" aria-hidden="true" aria-label="Site navigation">
+        <div class="sidebar-header">
+            <span class="sidebar-title">Menu</span>
+            <button id="nav-close" class="sidebar-close" type="button" aria-label="Close menu">&#10005;</button>
+        </div>
+        <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#faculty" class="nav-link">Faculty</a></li>
+                <li><a href="#cv" class="nav-link">Magazine</a></li>
+                <li><a href="#cv" class="nav-link">PDF</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="https://www.instagram.com/ritul_009_/" class="nav-link" target="_blank" rel="noopener">Instagram</a></li>
+                <li><a href="https://web.telegram.org/a/" class="nav-link" target="_blank" rel="noopener">Telegram</a></li>
+                <li><button id="dev-btn" type="button">Developers</button></li>
+                <li><button id="editor-btn" type="button">Editors</button></li>
+                <li><a class="nav-link admin-login-link" href="admin.html">Admin Login</a></li>
+            </ul>
+    </aside>
 
     <main>
         <!-- Canvas Background -->
@@ -330,11 +518,10 @@
 It reflects our cultural spirit where students weave words into stories, poems, essays, and critical reflections that inspire and connect.
 </p>
                 <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">Read Articles</a>
-                    <a href="#contact" class="btn btn-secondary">Meet the Contributors</a>
-                    <a href="magazines/index.html" class="btn btn-tertiary">Browse All Magazines</a>
-                    <a href="https://photos.app.goo.gl/n3ixEve5gbNFShB68" target="_blank" rel="noopener" class="btn btn-gallery-teachers">Teachers Gallery</a>
-                    <a href="https://photos.app.goo.gl/gbW6r59u5jqRv9mJ7" target="_blank" rel="noopener" class="btn btn-gallery-students">Students Gallery</a>
+                    <a href="#faculty" class="btn btn-primary">Meet Faculty</a>
+                    <a href="#cv" class="btn btn-secondary">View Magazine</a>
+                    <a href="magazines/index.html" class="btn btn-tertiary">Browse Archive</a>
+                    <a href="#contact" class="btn btn-gallery-students">Submit Your Work</a>
                 </div>
             </div>
             <div class="scroll-indicator">
@@ -379,225 +566,76 @@ It reflects our cultural spirit where students weave words into stories, poems, 
             </div>
         </section>
 
-        <!-- Projects Section -->
-        <section id="projects" class="section">
+        <!-- Faculty Section -->
+        <section id="faculty" class="section">
             <div class="container">
-                <h2 class="section-title">Our Collection</h2>                <div class="projects-grid">                    <div class="project-card">
-                        <div class="card-inner">
-                            <div class="project-image">
-                                <img src="img/whispers-of-poetry.jpg" alt="Whispers of Poetry" style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 8px;">
-                            </div>
-                            <div class="project-content">
-                            <h3 class="project-title metallic-silver-text">T.S. Eliot</h3>
-                            <p class="project-description"> “T. S. Eliot (1888–1965) was a famous Modernist poet and literary critic. He received the Nobel Prize in Literature in 1948.  
-    <br><br>
-    <em>His famous works include</em> The Waste Land and The Love Song of J. Alfred Prufrock. 
-</p>
-                            <div class="project-tech">
-                                <span class="tech-tag">Modernism</span>
-                                <span class="tech-tag">Fragmentation</span>
-                                <span class="tech-tag">Alienation</span>
-                                <span class="tech-tag">Spiritual Crisis</span>
-                            </div>
-                            <div class="project-links">
-                                <a href="https://en.wikipedia.org/wiki/T._S._Eliot" target="_blank" class="project-link">Tap to Explore</a>
-                            </div>
-                        </div>
+                <h2 class="section-title">Faculty</h2>
+                <div class="faculty-grid">
+                    <div class="faculty-card">
+                        <img src="img/whispers-of-poetry.jpeg" alt="Dr. Montu Saikia">
+                        <div class="faculty-card-body">
+                            <span class="faculty-role">Head of Department</span>
+                            <h3>Dr. Montu Saikia</h3>
                         </div>
                     </div>
 
-                    <div class="project-card">
-                        <div class="card-inner">
-                            <div class="project-image">
-                                <img src="img/imgechoes-thought.jpg" alt="Echoes of Thought" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                            </div>                        
-                            <div class="project-content">
-                            <h3 class="project-title metallic-silver-text">Queen Elizabeth</h3>
-<p class="project-description">
-“Queen Elizabeth I (1533–1603) was the Queen of England from 1558 to 1603. 
-<br><br>
-<em> Her reign is known as the Elizabethan Age</em> , a great period for English literature and drama, including writers like William Shakespeare.
-</p>
-<div class="project-tech">
-    <span class="tech-tag">Renaissance</span>
-    <span class="tech-tag">Drama</span>
-    <span class="tech-tag">Literature</span>
-    <span class="tech-tag">Humanism</span>
-</div>
-
-                            <div class="project-links">
-                                <a href="https://en.wikipedia.org/wiki/Elizabeth_I_of_England" target="_blank" class="project-link">Go Deeper</a>
-                                <a href="#" target="_blank" class="project-link"></a>
-                            </div>
-                        </div>
+                    <div class="faculty-card">
+                        <img src="img/imgechoes-thought.jpeg" alt="Dr. Vipasha">
+                        <div class="faculty-card-body">
+                            <span class="faculty-role">Faculty</span>
+                            <h3>Dr. Vipasha Bharadwaj</h3>
                         </div>
                     </div>
 
-                    <div class="project-card">      
-                        <div class="card-inner">        
-                            <div class="project-image">
-                                <img src="img/imgechoes-of-thought.png.png" alt="Literary Legends" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                            </div>                        <div class="project-content">
-                            <h3 class="project-title metallic-text">Geoffrey Chaucer</h3>
-                            <p class="project-description">“Some are born great, some achieve greatness, and some have greatness thrust upon them.” – William Shakespeare  
-<br><br>
-<em>Geoffrey Chaucer</em> (c. 1340–1400) was a famous English poet and writer, known as the “Father of English Literature.” His most famous work is The Canterbury Tales. He wrote about the people and society of medieval England and helped make Middle English an important literary language.
-</p>
-                            <div class="project-tech">
-                                <span class="tech-tag">Shakespeare</span>
-                                <span class="tech-tag">Keats</span>
-                                <span class="tech-tag">Tagore</span>
-                                <span class="tech-tag">Analysis</span>
-                            </div>
-                            <div class="project-links">
-                                <a href="https://en.wikipedia.org/wiki/Geoffrey_Chaucer" target="_blank" class="project-link">Dive In</a>
-                            </div>
+                    <div class="faculty-card">
+                        <img src="img/imgechoes-of-thought.png" alt="Dimpy">
+                        <div class="faculty-card-body">
+                            <span class="faculty-role">Faculty</span>
+                            <h3>Dimpy Basistha</h3>
                         </div>
+                    </div>
+
+                    <div class="faculty-card">
+                        <img src="img/WhatsApp Image 2025-09-05 at 6.15.53 PM.jpeg" alt="Pallab">
+                        <div class="faculty-card-body">
+                            <span class="faculty-role">Faculty</span>
+                            <h3>Pallab Jyoti Sarma</h3>
+                        </div>
+                    </div>
+
+                    <div class="faculty-card">
+                        <img src="img/WhatsApp Image 2025-09-06 at 11.38.33 AM (1).jpeg" alt="Ruchika">
+                        <div class="faculty-card-body">
+                            <span class="faculty-role">Faculty</span>
+                            <h3>Ruchika Kashyap</h3>
+                        </div>
+                    </div>
+
+                    <div class="faculty-card">
+                        <img src="img/statuswindow_landing_page.jpg" alt="Silkha">
+                        <div class="faculty-card-body">
+                            <span class="faculty-role">Faculty</span>
+                            <h3>Surashree Baruah</h3>
+                        </div>
+                    </div>
+
+                    <div class="faculty-card">
+                        <img src="img/e.jpeg" alt="Pulak">
+                        <div class="faculty-card-body">
+                            <span class="faculty-role">Faculty</span>
+                            <h3>Dr. Pulak Deka </h3>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Skills Section -->
-        <section id="skills" class="section">
-            <div class="container">
-                <h2 class="section-title">Department Highlights</h2>              
-                  <div class="skills-grid">
-                    <div class="skill-category">
-                        <div class="card-inner">
-                            <h3 class="skill-category-title">Achievements</h3>
-                            <div class="skills-list">
-                            <span class="skill-item">Student Research Papers</span>
-                            <span class="skill-item">Literary Competitions</span>
-                            <span class="skill-item">Workshops & Seminars</span>
-                            <span class="skill-item">Awards Won</span>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <div class="card-inner">
-                            <h3 class="skill-category-title">Upcoming Events</h3>
-                            <div class="skills-list">
-                                <span class="skill-item">Poetry Reading</span>
-                                <span class="skill-item">Drama Festival</span>
-                                <span class="skill-item">Book Fair</span>
-                                <span class="skill-item">Circuit Design</span>
-                                <span class="skill-item">Cultural Exchange</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <div class="card-inner">
-                            <h3 class="skill-category-title">Creative Writing</h3>
-                            <div class="skills-list">
-                                <span class="skill-item">Short Stories</span>
-                               <span class="skill-item">Critical Analysis</span>
-                               <span class="skill-item">Poetry</span>
-                                      <span class="skill-item">Short Stories</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <div class="card-inner">
-                            <h3 class="skill-category-title">Web Technologies & Tools </h3>
-                            <div class="skills-list">
-                                <span class="skill-item">Html</span>
-                                <span class="skill-item">CSS</span>
-                                <span class="skill-item">Javascript</span>
-                                <span class="skill-item">Ruby</span>
-                                <span class="skill-item">cv</span>
-                                <span class="skill-item">pdf</span>
-                                <span class="skill-item">Shell</span>
-                                <span class="skill-item">TypeScript</span>
-                                <span class="skill-item">PHP</span>
-                                <span class="skill-item">SQL</span>
-                            
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-    </section>      <!-- Department Team Section -->
-<section id="experience" class="section">
-    <div class="container">
-        <h2 class="section-title metallic-blue-text">Together Towards Innovation</h2>
-        <div class="experience-content">
-            <div class="experience-card">
-                <!-- Team Image -->
-                <div class="experience-image">
-                    <img src="img/ChatGPT Image Sep 5, 2025, 12_36_13 AM.png" 
-                         alt="Department Team" loading="lazy">
-                </div>
-
-                <!-- Team Details -->
-                <div class="experience-details">
-                    <div class="experience-summary">
-                       <p>
-   Our <strong class="metallic-text">Photo Gallery</strong> is a vibrant collection of cherished <strong>moments</strong> and <strong>memories</strong> that reflect the true spirit of our department. From creative events and academic milestones to cultural celebrations and teamwork, every frame tells a story of <strong>innovation</strong>, <strong>growth</strong>, and <strong>togetherness</strong>.  
-</p>
-<p>
-      
-
-
-<p> Click the links below to explore our gallery:</p>
-
-                        <a href="https://photos.app.goo.gl/n3ixEve5gbNFShB68" 
-                           target="_blank" 
-                           class="project-link" 
-                          style="
-      display: inline-block;               /* Make it behave like a button */
-      margin: 10px 0;                      /* Space above and below */
-      padding: 12px 25px;                  /* Inner spacing */
-      background: linear-gradient(135deg, #610496, #8317b1, #ad3b6e, #af34af, #515bd4);
-      color: white;                        /* Text color */
-      font-size: 16px;                     /* Text size */
-      font-weight: bold;                   /* Bold text */
-      font-family: Arial, sans-serif;      /* Font family */
-      border-radius: 25px;                 /* Rounded corners */
-      border: none;                        /* No border */
-      text-decoration: none;               /* Remove underline */
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Depth for clickability */
-      text-align: center;                  /* Center text */
-      transition: all 0.3s ease;           /* Smooth hover animation */
-   "
-   onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)';"
-   onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';"
-> 
-                           Teachers’ Gallery
-                        
-                        <a href="https://photos.app.goo.gl/gbW6r59u5jqRv9mJ7" 
-                           target="_blank" 
-                           class="project-link" 
-                          style="
-      display: inline-block;               /* Make it behave like a button */
-      margin: 10px 0;                      /* Space above and below */
-      padding: 12px 25px;                  /* Inner spacing */
-      background: linear-gradient(135deg, #610496, #8317b1, #ad3b6e, #af34af, #515bd4);
-      color: white;                        /* Text color */
-      font-size: 16px;                     /* Text size */
-      font-weight: bold;                   /* Bold text */
-      font-family: Arial, sans-serif;      /* Font family */
-      border-radius: 25px;                 /* Rounded corners */
-      border: none;                        /* No border */
-      text-decoration: none;               /* Remove underline */
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Depth for clickability */
-      text-align: center;                  /* Center text */
-      transition: all 0.3s ease;           /* Smooth hover animation */
-   "
-   onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)';"
-   onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';"
-> 
-                            Department Gallery 
-                        </a>
-                        
-                </div>
+        <div id="faculty-modal" class="faculty-modal" aria-hidden="true">
+            <div class="faculty-modal-content">
+                <button type="button" id="faculty-close" class="faculty-close" aria-label="Close faculty record">×</button>
+                <div id="faculty-modal-body"></div>
             </div>
         </div>
-    </div>
-</section>
-
 
         <!-- CV Section -->
         <section id="cv" class="section">
@@ -654,8 +692,8 @@ It reflects our cultural spirit where students weave words into stories, poems, 
                                             <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
                                         </svg>
                                     </div>
-                                    <h4 class="metallic-silver-text">CV Preview</h4>
-                                    <p>On mobile devices, CV preview is limited. View in full screen or download the PDF for the best experience.</p>
+                                    <h4 class="metallic-silver-text">PDF Preview</h4>
+                                    <p>On mobile devices, PDF preview is limited. View in full screen or download the PDF for the best experience.</p>
                                     
                                     <div class="mobile-cv-actions">
                                         <button onclick="openCVFullscreen()" class="btn btn-secondary mobile-view-btn">
@@ -678,9 +716,6 @@ It reflects our cultural spirit where students weave words into stories, poems, 
                 </div>
             </div>
         </section>
-
-
-        
 
         <!-- Contact Section -->
         <section id="contact" class="section">
@@ -758,8 +793,7 @@ It reflects our cultural spirit where students weave words into stories, poems, 
     <div class="container">
         <p>&copy; <span id="year"></span> Ritul Das. All rights reserved.</p>
         <p>Designed and curated by the English Department students.</p>
-        <p>Developed by Ritul Das from english Department</p>
-        <a class="admin-login-link" href="admin.html">Admin Login</a>
+        <p>Developed for the English Department magazine platform.</p>
     </div>
 </footer>
 
@@ -770,26 +804,196 @@ It reflects our cultural spirit where students weave words into stories, poems, 
 
     <!-- Scripts -->
     <script>
-        const navToggle = document.getElementById('nav-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-        const headerTools = document.querySelector('.header-tools');
+        const facultyRecords = {
+            'dr-ananya-boro': {
+                name: 'Dr. Ananya Boro',
+                role: 'Head of Department',
+                image: 'img/whispers-of-poetry.jpeg',
+                summary: 'Dedicated teacher and literary mentor guiding students in criticism, creative writing, and language appreciation.',
+                email: 'ananya.boro@college.edu',
+                phone: '+91 98765 43210',
+                qualification: 'Ph.D. in English Literature',
+                experience: '18 years',
+                specialties: ['Poetry', 'Modernism', 'Literary Criticism'],
+                achievements: ['Published research papers', 'Organized literary seminars', 'Guided student publications'],
+                subjects: ['British Literature', 'Critical Theory', 'Creative Writing']
+            },
+            'prof-rina-kalita': {
+                name: 'Prof. Rina Kalita',
+                role: 'Associate Professor',
+                image: 'img/imgechoes-thought.jpeg',
+                summary: 'Academic mentor focused on student growth, research support, and meaningful literary dialogue.',
+                email: 'rina.kalita@college.edu',
+                phone: '+91 91234 56789',
+                qualification: 'M.A. English, M.Phil.',
+                experience: '14 years',
+                specialties: ['Academic Writing', 'Seminars', 'Student Mentorship'],
+                achievements: ['Led departmental workshops', 'Coordinated academic events', 'Supported student research'],
+                subjects: ['Academic Writing', 'Linguistics', 'English Studies']
+            },
+            'mr-nabajit-sarmah': {
+                name: 'Mr. Nabajit Sarmah',
+                role: 'Creative Writing Mentor',
+                image: 'img/imgechoes-of-thought.png',
+                summary: 'Encourages students to explore poetry, essays, reviews, and confident literary expression.',
+                email: 'nabajit.sarmah@college.edu',
+                phone: '+91 93456 12345',
+                qualification: 'M.A. English',
+                experience: '11 years',
+                specialties: ['Poetry', 'Essays', 'Book Reviews'],
+                achievements: ['Conducted writing workshops', 'Mentored student contributors', 'Promoted reading culture'],
+                subjects: ['Poetry', 'Essay Writing', 'Contemporary Literature']
+            },
+            'dr-mitul-barua': {
+                name: 'Dr. Mitul Barua',
+                role: 'Professor',
+                image: 'img/whispers-of-poetry.jpeg',
+                summary: 'Promotes literary research, academic excellence, and a deeper understanding of modern texts.',
+                email: 'mitul.barua@college.edu',
+                phone: '+91 90012 34567',
+                qualification: 'Ph.D. in Modern Literature',
+                experience: '16 years',
+                specialties: ['Modern Literature', 'Research', 'Academic Leadership'],
+                achievements: ['Published journals', 'Supervised research projects', 'Delivered keynote lectures'],
+                subjects: ['Modernism', 'Postcolonial Studies', 'Literary Research']
+            },
+            'ms-sarmistha-das': {
+                name: 'Ms. Sarmistha Das',
+                role: 'Assistant Professor',
+                image: 'img/imgechoes-thought.jpeg',
+                summary: 'Helps students strengthen language skills, writing confidence, and literary understanding.',
+                email: 'sarmistha.das@college.edu',
+                phone: '+91 98770 11223',
+                qualification: 'M.A. English, B.Ed.',
+                experience: '9 years',
+                specialties: ['Language Teaching', 'Writing Skills', 'Student Development'],
+                achievements: ['Organized language labs', 'Conducted writing clinics', 'Supported classroom innovation'],
+                subjects: ['Communication Skills', 'Grammar', 'Prose Studies']
+            },
+            'mr-himangshu-ghosh': {
+                name: 'Mr. Himangshu Ghosh',
+                role: 'Assistant Professor',
+                image: 'img/imgechoes-of-thought.png',
+                summary: 'Explores drama, rhetoric, and performance-based literature through engaging classroom practice.',
+                email: 'himangshu.ghosh@college.edu',
+                phone: '+91 98111 22334',
+                qualification: 'M.A. English',
+                experience: '10 years',
+                specialties: ['Drama', 'Rhetoric', 'Performance Studies'],
+                achievements: ['Directed student plays', 'Facilitated literary groups', 'Hosted departmental events'],
+                subjects: ['Drama', 'Speech and Oral Skills', 'Literary Forms']
+            },
+            'dr-pranabika-deka': {
+                name: 'Dr. Pranabika Deka',
+                role: 'Senior Faculty',
+                image: 'img/whispers-of-poetry.jpeg',
+                summary: 'Guides advanced literary study with a focus on colonial history, theory, and cultural analysis.',
+                email: 'pranabika.deka@college.edu',
+                phone: '+91 96543 21098',
+                qualification: 'Ph.D. in English and Cultural Studies',
+                experience: '20 years',
+                specialties: ['Colonial Literature', 'Cultural Studies', 'Critical Theory'],
+                achievements: ['Published research on culture and literature', 'Led academic conferences', 'Mentored postgraduate learners'],
+                subjects: ['Colonial Literature', 'Cultural Studies', 'Theory and Criticism']
+            }
+        };
 
-        navToggle.addEventListener('click', () => {
-            const collapsed = document.body.classList.toggle('navigation-collapsed');
-            navToggle.setAttribute('aria-expanded', String(!collapsed));
-            navToggle.textContent = collapsed ? 'Open menu' : 'Close menu';
-            navMenu.setAttribute('aria-hidden', String(collapsed));
-            headerTools.setAttribute('aria-hidden', String(collapsed));
+        const facultyModal = document.getElementById('faculty-modal');
+        const facultyModalBody = document.getElementById('faculty-modal-body');
+        const facultyCloseBtn = document.getElementById('faculty-close');
+
+        function openFacultyRecord(key) {
+            const record = facultyRecords[key];
+            if (!record) return;
+
+            facultyModalBody.innerHTML = `
+                <div class="faculty-detail-header">
+                    <img src="${record.image}" alt="${record.name}">
+                    <div>
+                        <span class="faculty-role">${record.role}</span>
+                        <h3>${record.name}</h3>
+                        <p>${record.summary}</p>
+                    </div>
+                </div>
+
+                <div class="faculty-modal-row">
+                    <strong>Qualification</strong>
+                    <div class="faculty-modal-entry"><span>${record.qualification}</span></div>
+                </div>
+
+                <div class="faculty-modal-row">
+                    <strong>Experience</strong>
+                    <div class="faculty-modal-entry"><span>${record.experience}</span></div>
+                </div>
+
+                <div class="faculty-modal-row">
+                    <strong>Email</strong>
+                    <div class="faculty-modal-entry"><span>${record.email}</span></div>
+                </div>
+
+                <div class="faculty-modal-row">
+                    <strong>Phone</strong>
+                    <div class="faculty-modal-entry"><span>${record.phone}</span></div>
+                </div>
+
+                <div class="faculty-modal-row">
+                    <strong>Subjects</strong>
+                    <div class="faculty-modal-entry">${record.subjects.map(item => `<span>${item}</span>`).join('')}</div>
+                </div>
+
+                <div class="faculty-modal-row">
+                    <strong>Specialties</strong>
+                    <div class="faculty-modal-entry">${record.specialties.map(item => `<span>${item}</span>`).join('')}</div>
+                </div>
+
+                <div class="faculty-modal-row">
+                    <strong>Achievements</strong>
+                    <div class="faculty-modal-entry">
+                        <ul>
+                            ${record.achievements.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            facultyModal.classList.add('active');
+            facultyModal.setAttribute('aria-hidden', 'false');
+        }
+
+        facultyCloseBtn.addEventListener('click', () => {
+            facultyModal.classList.remove('active');
+            facultyModal.setAttribute('aria-hidden', 'true');
         });
 
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                document.body.classList.remove('navigation-collapsed');
-                navToggle.setAttribute('aria-expanded', 'true');
-                navToggle.textContent = 'Close menu';
-                navMenu.setAttribute('aria-hidden', 'false');
-                headerTools.setAttribute('aria-hidden', 'false');
-            });
+        facultyModal.addEventListener('click', (event) => {
+            if (event.target === facultyModal) {
+                facultyModal.classList.remove('active');
+                facultyModal.setAttribute('aria-hidden', 'true');
+            }
+        });
+
+        const navToggle = document.getElementById('nav-toggle');
+        const navClose = document.getElementById('nav-close');
+        const sidebar = document.getElementById('site-navigation');
+        const navigationBackdrop = document.getElementById('navigation-backdrop');
+
+        function setNavigationOpen(isOpen) {
+            document.body.classList.toggle('navigation-open', isOpen);
+            navToggle.setAttribute('aria-expanded', String(isOpen));
+            sidebar.setAttribute('aria-hidden', String(!isOpen));
+            navigationBackdrop.setAttribute('aria-hidden', String(!isOpen));
+        }
+
+        navToggle.addEventListener('click', () => {
+            setNavigationOpen(!document.body.classList.contains('navigation-open'));
+        });
+        navClose.addEventListener('click', () => setNavigationOpen(false));
+        navigationBackdrop.addEventListener('click', () => setNavigationOpen(false));
+
+        sidebar.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => setNavigationOpen(false));
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') setNavigationOpen(false);
         });
 
         // Copy to clipboard functionality

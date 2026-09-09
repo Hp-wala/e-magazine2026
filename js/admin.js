@@ -13,8 +13,25 @@ const MAGAZINE_STORAGE_KEY = 'english-department-magazine-pdf';
 const EDITORS_STORAGE_KEY = 'english-department-editors';
 const ARCHIVE_STORAGE_KEY = 'english-department-magazine-archive';
 const RECYCLE_BIN_STORAGE_KEY = 'english-department-magazine-recycle-bin';
+const PROFILE_PHOTOS_STORAGE_KEY = 'english-department-profile-photos';
 const DEFAULT_ARCHIVE_ENTRIES = [
     { year: '2026', title: '2026 Collection', pdf: 'img/cv.pdf', editors: [] }
+];
+const PROFILE_DIRECTORY = [
+    { group: 'Advisor', people: [{ name: 'Dr. Montu Saikia', role: 'Advisor', photo: 'img/whispers-of-poetry.jpeg' }] },
+    { group: 'Teacher Members', people: [
+        ['Dr. Pulak Deka', 'img/e.jpeg'], ['Dimpi Basistha', 'img/imgechoes-thought.jpeg'], ['Pallab Jyoti Sarma', 'img/statuswindow_landing_page.jpg'],
+        ['Ruchika Kashyap', 'img/imgechoes-of-thought.png'], ['Surashree Baruah', 'img/whispers-of-poetry.jpeg']
+    ].map(([name, photo]) => ({ name, role: 'Teacher Member', photo })) },
+    { group: 'Editorial Leadership', people: [
+        ['Violina Deka', 'Editor', 'img/imgechoes-thought.jpeg'], ['Trisha Hazarika', 'Assistant Editor', 'img/e.jpeg'],
+        ['Hrisikesh Sarma', 'Special Advisor to Editor', 'img/statuswindow_landing_page.jpg'], ['Irfan Farhad', 'Special Advisor to Editor', 'img/imgechoes-of-thought.png']
+    ].map(([name, role, photo]) => ({ name, role, photo })) },
+    { group: 'Editorial Team', people: [
+        'Himadri Kumar', 'Kuntala Baharali', 'Mridushmita Kumar', 'Mrinmoy Sarma', 'Ritul Das', 'Priti Deka', 'Parbin Sultana',
+        'Bhitali Kashyap', 'Maromi Sultana', 'Khusi Devi', 'Mandip Rajbongshi', 'Birina Sarania', 'Sumiya Hiussain',
+        'Dipjyoti Kakati', 'Amrita Das', 'Tonmoy Nath'
+    ].map((name, index) => ({ name, role: 'Editorial Team', photo: ['img/whispers-of-poetry.jpeg', 'img/imgechoes-thought.jpeg', 'img/e.jpeg', 'img/imgechoes-of-thought.png'][index % 4] })) }
 ];
 
 document.getElementById('show-password').addEventListener('change', event => {
@@ -83,6 +100,124 @@ function getEditors() {
 
 function saveEditors(editors) {
     localStorage.setItem(EDITORS_STORAGE_KEY, JSON.stringify(editors));
+}
+
+function profileKey(name) {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function getProfilePhotos() {
+    try {
+        return JSON.parse(localStorage.getItem(PROFILE_PHOTOS_STORAGE_KEY) || '{}');
+    } catch {
+        return {};
+    }
+}
+
+function saveProfilePhotos(photos) {
+    localStorage.setItem(PROFILE_PHOTOS_STORAGE_KEY, JSON.stringify(photos));
+}
+
+function readImageFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('The image could not be read.'));
+        reader.readAsDataURL(file);
+    });
+}
+
+function renderProfilePhotoAdmin() {
+    const list = document.getElementById('profile-photo-admin-list');
+    const storedPhotos = getProfilePhotos();
+    list.replaceChildren();
+    PROFILE_DIRECTORY.flatMap(section => section.people).forEach(person => {
+        const key = profileKey(person.name);
+        const saved = storedPhotos[key] || {};
+        const row = document.createElement('div');
+        row.className = 'profile-photo-row';
+
+        const preview = document.createElement('img');
+        preview.className = 'profile-photo-preview';
+        preview.src = saved.photo || person.photo;
+        preview.alt = `${person.name} preview`;
+        preview.style.objectPosition = `${saved.x ?? 50}% ${saved.y ?? 50}%`;
+        preview.style.transform = `scale(${saved.zoom || 1})`;
+
+        const info = document.createElement('div');
+        const name = document.createElement('p');
+        name.className = 'profile-photo-name';
+        name.textContent = person.name;
+        const role = document.createElement('p');
+        role.className = 'profile-photo-role';
+        role.textContent = `${section.group} - ${person.role}`;
+        info.append(name, role);
+
+        const controls = document.createElement('div');
+        controls.className = 'profile-photo-controls';
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.setAttribute('aria-label', `Upload photo for ${person.name}`);
+        const zoomInput = document.createElement('input');
+        zoomInput.type = 'range';
+        zoomInput.min = '1';
+        zoomInput.max = '2.5';
+        zoomInput.step = '.05';
+        zoomInput.value = saved.zoom || '1';
+        zoomInput.title = 'Photo zoom';
+        const positionInput = document.createElement('input');
+        positionInput.type = 'range';
+        positionInput.min = '0';
+        positionInput.max = '100';
+        positionInput.value = saved.x ?? '50';
+        positionInput.title = 'Photo horizontal position';
+        const verticalInput = document.createElement('input');
+        verticalInput.type = 'range';
+        verticalInput.min = '0';
+        verticalInput.max = '100';
+        verticalInput.value = saved.y ?? '50';
+        verticalInput.title = 'Photo vertical position';
+        const saveButton = document.createElement('button');
+        saveButton.type = 'button';
+        saveButton.textContent = 'Save';
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'danger-button';
+        deleteButton.textContent = 'Reset';
+
+        zoomInput.addEventListener('input', () => { preview.style.transform = `scale(${zoomInput.value})`; });
+        const updatePosition = () => { preview.style.objectPosition = `${positionInput.value}% ${verticalInput.value}%`; };
+        positionInput.addEventListener('input', updatePosition);
+        verticalInput.addEventListener('input', updatePosition);
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) return showStatus('Please choose an image file.', true);
+            const reader = new FileReader();
+            reader.onload = () => { preview.src = reader.result; };
+            reader.readAsDataURL(file);
+        });
+        saveButton.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            let photo = saved.photo || '';
+            if (file) photo = await readImageFile(file);
+            const photos = getProfilePhotos();
+            photos[key] = { photo, zoom: Number(zoomInput.value), x: Number(positionInput.value), y: Number(verticalInput.value) };
+            saveProfilePhotos(photos);
+            showStatus(`${person.name} profile photo saved.`);
+        });
+        deleteButton.addEventListener('click', () => {
+            const photos = getProfilePhotos();
+            delete photos[key];
+            saveProfilePhotos(photos);
+            renderProfilePhotoAdmin();
+            showStatus(`${person.name} photo reset to default.`);
+        });
+        controls.append(fileInput, zoomInput, positionInput, verticalInput, saveButton, deleteButton);
+        row.append(preview, info, controls);
+        list.appendChild(row);
+    });
 }
 
 function getArchiveEntries() {
@@ -451,5 +586,6 @@ document.getElementById('archive-add-form').addEventListener('submit', async eve
 checkSession();
 setupFileDropzones();
 renderEditors();
+renderProfilePhotoAdmin();
 renderArchiveDeleteOptions();
 renderRecycleBin();

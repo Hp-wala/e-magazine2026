@@ -900,6 +900,16 @@ It reflects our cultural spirit where students weave words into stories, poems, 
         const personDetailClose = document.getElementById('person-detail-close');
         const personDetailContent = document.getElementById('person-detail-content');
 
+        function getSavedProfilePhoto(person) {
+            try {
+                const key = person.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                const saved = JSON.parse(localStorage.getItem('english-department-profile-photos') || '{}')[key];
+                return saved ? { src: saved.photo || person.photo, zoom: saved.zoom || 1, x: saved.x ?? 50, y: saved.y ?? 50 } : { src: person.photo, zoom: 1, x: 50, y: 50 };
+            } catch {
+                return { src: person.photo, zoom: 1, x: 50, y: 50 };
+            }
+        }
+
         function closePeopleDirectory() {
             peopleDirectoryModal.classList.remove('is-open');
             peopleDirectoryModal.setAttribute('aria-hidden', 'true');
@@ -914,8 +924,11 @@ It reflects our cultural spirit where students weave words into stories, poems, 
         function showPersonDetail(person) {
             personDetailContent.replaceChildren();
             const image = document.createElement('img');
-            image.src = person.photo;
+            const photo = getSavedProfilePhoto(person);
+            image.src = photo.src;
             image.alt = `${person.name} profile photo`;
+            image.style.objectPosition = `${photo.x}% ${photo.y}%`;
+            image.style.transform = `scale(${photo.zoom})`;
             const text = document.createElement('div');
             const role = document.createElement('p');
             role.className = 'person-detail-role';
@@ -945,8 +958,11 @@ It reflects our cultural spirit where students weave words into stories, poems, 
                     card.type = 'button';
                     card.className = 'person-card';
                     const image = document.createElement('img');
-                    image.src = person.photo;
+                    const photo = getSavedProfilePhoto(person);
+                    image.src = photo.src;
                     image.alt = `${person.name} profile photo`;
+                    image.style.objectPosition = `${photo.x}% ${photo.y}%`;
+                    image.style.transform = `scale(${photo.zoom})`;
                     const details = document.createElement('span');
                     const name = document.createElement('span');
                     name.className = 'person-card-name';

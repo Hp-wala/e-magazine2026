@@ -93,6 +93,16 @@ button:disabled { cursor: wait; opacity: .65; }
 .editor-admin-list { display: grid; gap: .75rem; margin-top: 1.5rem; }
 .editor-admin-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: .5rem; align-items: center; }
 .editor-admin-row button { padding: .7rem .8rem; }
+.profile-photo-admin-list { display: grid; gap: .8rem; margin-top: 1.25rem; }
+.profile-photo-row { display: grid; grid-template-columns: 58px minmax(130px, 1fr) minmax(0, 1.35fr); gap: .75rem; align-items: center; padding: .75rem; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.035); }
+.profile-photo-preview { width: 58px; height: 58px; border: 2px solid var(--accent); border-radius: 50%; object-fit: cover; background: rgba(255,255,255,.08); }
+.profile-photo-name { margin: 0; color: var(--ink); font: 700 .86rem/1.3 Arial, sans-serif; }
+.profile-photo-role { margin: .2rem 0 0; color: var(--muted); font: .72rem/1.3 Arial, sans-serif; }
+.profile-photo-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: .45rem; align-items: center; }
+.profile-photo-controls input[type="file"] { min-width: 0; padding: .45rem; }
+.profile-photo-controls input[type="range"] { width: 90px; padding: 0; }
+.profile-photo-controls button { padding: .65rem .7rem; }
+@media (max-width: 680px) { .profile-photo-row { grid-template-columns: 58px 1fr; } .profile-photo-controls { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; } .profile-photo-controls input[type="file"] { grid-column: 1 / -1; } }
 .danger-button { color: #fff; background: #bd5964; }
 .danger-button:hover { background: #d66b76; }
 .archive-admin-list { display: grid; gap: .75rem; margin-top: 1.5rem; }

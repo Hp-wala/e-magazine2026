@@ -14,7 +14,7 @@ const EDITORS_STORAGE_KEY = 'english-department-editors';
 const ARCHIVE_STORAGE_KEY = 'english-department-magazine-archive';
 const RECYCLE_BIN_STORAGE_KEY = 'english-department-magazine-recycle-bin';
 const DEFAULT_ARCHIVE_ENTRIES = [
-    { year: '2025', title: '2025 Collection', pdf: '' }
+    { year: '2026', title: '2026 Collection', pdf: 'img/cv.pdf', editors: [] }
 ];
 
 document.getElementById('show-password').addEventListener('change', event => {

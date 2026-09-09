@@ -19,15 +19,14 @@
     </main>
     <script>
         const defaultArchive = [
-            { year: '2025', title: '2025 Collection', pdf: '', editors: [] }
+            { year: '2026', title: '2026 Collection', pdf: 'img/cv.pdf', editors: [] }
         ];
         const archiveGrid = document.getElementById('archive-grid');
         let archiveEntries = defaultArchive;
         try {
             const savedEntries = JSON.parse(localStorage.getItem('english-department-magazine-archive') || 'null');
-            if (Array.isArray(savedEntries)) {
-                archiveEntries = savedEntries.filter(entry => entry.year !== '2024' && entry.pdf);
-            }
+            if (Array.isArray(savedEntries)) archiveEntries = savedEntries.filter(entry => entry.year !== '2024' && entry.pdf);
+            if (!archiveEntries.some(entry => entry.year === '2026')) archiveEntries.unshift(defaultArchive[0]);
         } catch {
             archiveEntries = defaultArchive;
         }

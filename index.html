@@ -44,6 +44,28 @@
     </div>
 </div>
 
+<button id="people-directory-button" class="people-directory-button" type="button" aria-label="Open department people directory">
+    <span class="people-directory-icon" aria-hidden="true">✦</span>
+    <span>People</span>
+</button>
+
+<div id="people-directory-modal" class="people-directory-modal" aria-hidden="true">
+    <div class="people-directory-panel" role="dialog" aria-modal="true" aria-labelledby="people-directory-title">
+        <button id="people-directory-close" class="people-directory-close" type="button" aria-label="Close people directory">×</button>
+        <p class="people-directory-kicker">English Department</p>
+        <h2 id="people-directory-title">Department People</h2>
+        <p class="people-directory-intro">Meet the people shaping this year's Wall Magazine.</p>
+        <div id="people-directory-groups"></div>
+    </div>
+</div>
+
+<div id="person-detail-modal" class="person-detail-modal" aria-hidden="true">
+    <div class="person-detail-panel" role="dialog" aria-modal="true" aria-labelledby="person-detail-name">
+        <button id="person-detail-close" class="people-directory-close" type="button" aria-label="Close profile">×</button>
+        <div id="person-detail-content"></div>
+    </div>
+</div>
+
 <style>
   .dev-title {
     font-size: 2rem;
@@ -316,6 +338,32 @@
     .editor-profile-name { margin: 0; color: white; font: 600 1rem Arial, sans-serif; overflow-wrap: anywhere; }
     .editor-empty { position: relative; z-index: 2; color: white; }
     @media (max-width: 600px) { .editor-modal-content { padding: 24px 18px; border-radius: 25% 10% 25% 10%; } }
+
+    .people-directory-button { position: fixed; top: 18px; right: 22px; z-index: 1100; display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 7px 14px 7px 7px; border: 1px solid rgba(255,255,255,.3); border-radius: 999px; color: #fff; background: linear-gradient(135deg, #4285f4, #7c3aed); box-shadow: 0 10px 28px rgba(35, 55, 150, .35); font: 700 .85rem Arial, sans-serif; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+    .people-directory-button:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 14px 32px rgba(35, 55, 150, .5); }
+    .people-directory-icon { display: grid; place-items: center; width: 31px; height: 31px; border-radius: 50%; background: rgba(255,255,255,.2); font-size: 1.1rem; }
+    .people-directory-modal, .person-detail-modal { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 22px; background: rgba(5, 8, 18, .78); backdrop-filter: blur(12px); overflow: auto; }
+    .people-directory-modal.is-open, .person-detail-modal.is-open { display: flex; }
+    .people-directory-panel, .person-detail-panel { position: relative; width: min(980px, 100%); max-height: 90vh; overflow: auto; padding: 34px; border: 1px solid rgba(124,224,195,.35); border-radius: 24px; color: #f7f8fb; background: linear-gradient(145deg, #162b38, #10151f 70%); box-shadow: 0 28px 90px rgba(0,0,0,.5); }
+    .people-directory-panel h2 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); }
+    .people-directory-kicker { margin: 0 0 8px; color: #7ce0c3; font: 700 .78rem Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+    .people-directory-intro { margin: 10px 0 24px; color: #b8c5d0; line-height: 1.6; }
+    .people-directory-close { position: absolute; top: 15px; right: 17px; width: 38px; height: 38px; padding: 0; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; color: #fff; background: rgba(255,255,255,.08); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+    .people-directory-close:hover { background: rgba(255,255,255,.18); }
+    .people-group { margin-top: 28px; }
+    .people-group h3 { margin: 0 0 12px; color: #7ce0c3; font: 700 .85rem Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+    .people-group-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 13px; }
+    .person-card { display: flex; align-items: center; gap: 11px; min-height: 92px; padding: 11px; border: 1px solid rgba(255,255,255,.13); border-radius: 15px; color: #fff; background: rgba(255,255,255,.07); text-align: left; cursor: pointer; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
+    .person-card:hover { transform: translateY(-3px); border-color: #7ce0c3; background: rgba(124,224,195,.13); }
+    .person-card img { width: 54px; height: 54px; flex: 0 0 54px; border: 2px solid rgba(124,224,195,.65); border-radius: 50%; object-fit: cover; background: #253947; }
+    .person-card-name { margin: 0; font: 700 .9rem/1.3 Arial, sans-serif; }
+    .person-card-role { margin: 4px 0 0; color: #aebdca; font: .72rem/1.3 Arial, sans-serif; }
+    .person-detail-content { display: grid; grid-template-columns: 150px 1fr; gap: 24px; align-items: center; }
+    .person-detail-content img { width: 150px; height: 150px; border: 4px solid #7ce0c3; border-radius: 24px; object-fit: cover; }
+    .person-detail-content h2 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.5rem); }
+    .person-detail-content p { margin: 7px 0; color: #b8c5d0; line-height: 1.6; }
+    .person-detail-role { color: #7ce0c3 !important; font: 700 .85rem Arial, sans-serif; text-transform: uppercase; letter-spacing: .08em; }
+    @media (max-width: 600px) { .people-directory-button { top: 12px; right: 12px; } .people-directory-panel, .person-detail-panel { padding: 25px 18px; } .person-detail-content { grid-template-columns: 1fr; text-align: center; } .person-detail-content img { margin: 0 auto; } }
 </style>
 
 <script>
@@ -803,6 +851,138 @@ It reflects our cultural spirit where students weave words into stories, poems, 
 
 
     <!-- Scripts -->
+    <script>
+        const peopleDirectory = [
+            {
+                group: 'Advisor',
+                people: [
+                    { name: 'Dr. Montu Saikia', role: 'Advisor', photo: 'img/whispers-of-poetry.jpeg' }
+                ]
+            },
+            {
+                group: 'Teacher Members',
+                people: [
+                    { name: 'Dr. Pulak Deka', role: 'Teacher Member', photo: 'img/e.jpeg' },
+                    { name: 'Dimpi Basistha', role: 'Teacher Member', photo: 'img/imgechoes-thought.jpeg' },
+                    { name: 'Pallab Jyoti Sarma', role: 'Teacher Member', photo: 'img/statuswindow_landing_page.jpg' },
+                    { name: 'Ruchika Kashyap', role: 'Teacher Member', photo: 'img/imgechoes-of-thought.png' },
+                    { name: 'Surashree Baruah', role: 'Teacher Member', photo: 'img/whispers-of-poetry.jpeg' }
+                ]
+            },
+            {
+                group: 'Editorial Leadership',
+                people: [
+                    { name: 'Violina Deka', role: 'Editor', photo: 'img/imgechoes-thought.jpeg' },
+                    { name: 'Trisha Hazarika', role: 'Assistant Editor', photo: 'img/e.jpeg' },
+                    { name: 'Hrisikesh Sarma', role: 'Special Advisor to Editor', photo: 'img/statuswindow_landing_page.jpg' },
+                    { name: 'Irfan Farhad', role: 'Special Advisor to Editor', photo: 'img/imgechoes-of-thought.png' }
+                ]
+            },
+            {
+                group: 'Editorial Team',
+                people: [
+                    'Himadri Kumar', 'Kuntala Baharali', 'Mridushmita Kumar', 'Mrinmoy Sarma', 'Ritul Das',
+                    'Priti Deka', 'Parbin Sultana', 'Bhitali Kashyap', 'Maromi Sultana', 'Khusi Devi',
+                    'Mandip Rajbongshi', 'Birina Sarania', 'Sumiya Hiussain', 'Dipjyoti Kakati', 'Amrita Das', 'Tonmoy Nath'
+                ].map((name, index) => ({
+                    name,
+                    role: 'Editorial Team',
+                    photo: ['img/whispers-of-poetry.jpeg', 'img/imgechoes-thought.jpeg', 'img/e.jpeg', 'img/imgechoes-of-thought.png'][index % 4]
+                }))
+            }
+        ];
+
+        const peopleDirectoryButton = document.getElementById('people-directory-button');
+        const peopleDirectoryModal = document.getElementById('people-directory-modal');
+        const peopleDirectoryClose = document.getElementById('people-directory-close');
+        const peopleDirectoryGroups = document.getElementById('people-directory-groups');
+        const personDetailModal = document.getElementById('person-detail-modal');
+        const personDetailClose = document.getElementById('person-detail-close');
+        const personDetailContent = document.getElementById('person-detail-content');
+
+        function closePeopleDirectory() {
+            peopleDirectoryModal.classList.remove('is-open');
+            peopleDirectoryModal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        function closePersonDetail() {
+            personDetailModal.classList.remove('is-open');
+            personDetailModal.setAttribute('aria-hidden', 'true');
+        }
+
+        function showPersonDetail(person) {
+            personDetailContent.replaceChildren();
+            const image = document.createElement('img');
+            image.src = person.photo;
+            image.alt = `${person.name} profile photo`;
+            const text = document.createElement('div');
+            const role = document.createElement('p');
+            role.className = 'person-detail-role';
+            role.textContent = person.role;
+            const name = document.createElement('h2');
+            name.id = 'person-detail-name';
+            name.textContent = person.name;
+            const description = document.createElement('p');
+            description.textContent = `Member of the English Department Wall Magazine ${person.role.toLowerCase()} group.`;
+            text.append(role, name, description);
+            personDetailContent.append(image, text);
+            personDetailModal.classList.add('is-open');
+            personDetailModal.setAttribute('aria-hidden', 'false');
+        }
+
+        function openPeopleDirectory() {
+            peopleDirectoryGroups.replaceChildren();
+            peopleDirectory.forEach(section => {
+                const group = document.createElement('section');
+                group.className = 'people-group';
+                const heading = document.createElement('h3');
+                heading.textContent = section.group;
+                const grid = document.createElement('div');
+                grid.className = 'people-group-grid';
+                section.people.forEach(person => {
+                    const card = document.createElement('button');
+                    card.type = 'button';
+                    card.className = 'person-card';
+                    const image = document.createElement('img');
+                    image.src = person.photo;
+                    image.alt = `${person.name} profile photo`;
+                    const details = document.createElement('span');
+                    const name = document.createElement('span');
+                    name.className = 'person-card-name';
+                    name.textContent = person.name;
+                    const role = document.createElement('span');
+                    role.className = 'person-card-role';
+                    role.textContent = person.role;
+                    details.append(name, role);
+                    card.append(image, details);
+                    card.addEventListener('click', () => showPersonDetail(person));
+                    grid.appendChild(card);
+                });
+                group.append(heading, grid);
+                peopleDirectoryGroups.appendChild(group);
+            });
+            peopleDirectoryModal.classList.add('is-open');
+            peopleDirectoryModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        peopleDirectoryButton.addEventListener('click', openPeopleDirectory);
+        peopleDirectoryClose.addEventListener('click', closePeopleDirectory);
+        personDetailClose.addEventListener('click', closePersonDetail);
+        peopleDirectoryModal.addEventListener('click', event => {
+            if (event.target === peopleDirectoryModal) closePeopleDirectory();
+        });
+        personDetailModal.addEventListener('click', event => {
+            if (event.target === personDetailModal) closePersonDetail();
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                closePersonDetail();
+                closePeopleDirectory();
+            }
+        });
+    </script>
     <script>
         const facultyRecords = {
             'dr-ananya-boro': {

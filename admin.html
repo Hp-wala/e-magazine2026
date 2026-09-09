@@ -34,9 +34,14 @@
                 <p>Select a PDF to replace the current magazine in this browser. This temporary setup is for development only.</p>
                 <form id="upload-form" class="admin-form">
                     <label for="magazine-file">New E-Magazine PDF</label>
-                    <input id="magazine-file" name="magazine" type="file" accept="application/pdf" required>
+                    <div class="file-dropzone" data-file-input="magazine-file">
+                        <span>Drop PDF here or choose a file</span>
+                        <input id="magazine-file" name="magazine" type="file" accept="application/pdf" required>
+                    </div>
                     <button type="submit">Upload and publish</button>
+                    <p id="upload-status" class="form-status" role="status" aria-live="polite"></p>
                 </form>
+                <button id="delete-magazine-button" class="danger-button delete-magazine-button" type="button">Delete current magazine</button>
 
                 <section class="management-section" aria-labelledby="editors-title">
                     <p class="eyebrow">People</p>
@@ -53,33 +58,56 @@
                 <section class="management-section" aria-labelledby="archive-title">
                     <p class="eyebrow">Year-wise folders</p>
                     <h2 id="archive-title">Manage Magazine Archive</h2>
-                    <p>Add or update the year folders shown on the public Magazine Archive page.</p>
+                    <p>Upload a PDF to add it to the public Magazine Archive page.</p>
                     <form id="archive-add-form" class="admin-form archive-add-form">
-                        <label for="archive-year">Choose year folder</label>
-                        <select id="archive-year" name="archiveYear" required>
-                            <option value="">Select a year</option>
-                            <option>2025</option>
-                            <option>2026</option>
-                            <option>2027</option>
-                            <option>2028</option>
-                            <option>2029</option>
-                            <option>2030</option>
-                            <option>2031</option>
-                            <option>2032</option>
-                            <option>2033</option>
-                            <option>2034</option>
-                            <option>2035</option>
-                        </select>
-                        <label for="archive-title-input">Collection title</label>
-                        <input id="archive-title-input" name="archiveTitle" placeholder="2026 Collection" required>
-                        <label for="archive-pdf-file">Choose PDF from device (optional)</label>
-                        <input id="archive-pdf-file" name="archivePdfFile" type="file" accept="application/pdf">
-                        <label for="archive-editors">Editors for this magazine (separate names with commas)</label>
-                        <input id="archive-editors" name="archiveEditors" placeholder="Asha Sharma, Rahul Das">
-                        <button type="submit">Add archive folder</button>
+                        <div class="archive-field">
+                            <label for="archive-year">Publication year</label>
+                            <input id="archive-year" name="archiveYear" type="number" min="2000" max="2100" placeholder="2026" required>
+                        </div>
+                        <div class="archive-field">
+                            <label for="archive-title-input">Magazine title</label>
+                            <input id="archive-title-input" name="archiveTitle" placeholder="2026 Collection" required>
+                        </div>
+                        <div class="archive-field archive-file-field">
+                            <label for="archive-pdf-file">Browse PDF</label>
+                            <div class="file-dropzone" data-file-input="archive-pdf-file">
+                                <span>Drop PDF here or choose a file</span>
+                                <input id="archive-pdf-file" name="archivePdfFile" type="file" accept="application/pdf" required>
+                            </div>
+                        </div>
+                        <div class="archive-field archive-file-field">
+                            <label for="archive-editors">Yearly editors (comma-separated)</label>
+                            <input id="archive-editors" name="archiveEditors" placeholder="Asha Sharma, Rahul Das">
+                        </div>
+                        <button type="submit">Add magazine</button>
+                        <p id="archive-upload-status" class="form-status" role="status" aria-live="polite"></p>
                     </form>
-                    <div id="archive-admin-list" class="archive-admin-list"></div>
+                    <div class="archive-delete-row">
+                        <label for="archive-delete-year">Remove a yearly collection</label>
+                        <div class="archive-delete-controls">
+                            <select id="archive-delete-year" aria-label="Yearly collection to remove"></select>
+                            <button id="delete-archive-button" class="danger-button" type="button">Delete collection</button>
+                        </div>
+                        <label for="archive-edit-year">Select collection to edit yearly editors</label>
+                        <select id="archive-edit-year" aria-label="Yearly collection to edit"></select>
+                        <label for="archive-editors-edit">Editors for selected collection</label>
+                        <input id="archive-editors-edit" placeholder="Asha Sharma, Rahul Das">
+                        <button id="save-archive-editors" type="button">Save yearly editors</button>
+                    </div>
+
+                    <div class="recycle-bin" aria-labelledby="recycle-bin-title">
+                        <p class="eyebrow">Safety</p>
+                        <h3 id="recycle-bin-title">Recycle Bin</h3>
+                        <p>Deleted magazines stay here until you restore or permanently remove them.</p>
+                        <label for="recycle-bin-select">Deleted magazine by year</label>
+                        <div class="recycle-bin-controls">
+                            <select id="recycle-bin-select" aria-label="Deleted magazine to manage"></select>
+                            <button id="restore-recycle-button" type="button">Restore</button>
+                            <button id="empty-recycle-button" class="danger-button" type="button">Delete permanently</button>
+                        </div>
+                    </div>
                 </section>
+
             </section>
             <p id="status" class="status" role="status" aria-live="polite"></p>
         </section>

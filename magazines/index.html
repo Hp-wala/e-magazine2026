@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Magazine Archive | English Department</title>
-    <link rel="stylesheet" href="/magazines/archive.css">
+    <link rel="stylesheet" href="archive.css">
 </head>
 <body>
     <main class="archive-shell">
-        <a class="back-link" href="/index.html">Back to magazine</a>
+        <a class="back-link" href="../index.html">Back to magazine</a>
         <header class="archive-header">
             <p class="eyebrow">English Department</p>
             <h1>Magazine Archive</h1>
@@ -28,6 +28,24 @@
             if (Array.isArray(savedEntries)) archiveEntries = savedEntries.filter(entry => entry.year !== '2024');
         } catch {
             archiveEntries = defaultArchive;
+        }
+
+        function resolvePdfUrl(pdf) {
+            if (!pdf) return '';
+            if (!pdf.startsWith('data:')) {
+                return pdf.startsWith('http') || pdf.startsWith('/') || pdf.startsWith('blob:')
+                    ? pdf
+                    : `../${pdf.replace(/^\.\//, '')}`;
+            }
+            try {
+                const [metadata, encodedData] = pdf.split(',', 2);
+                const binary = atob(encodedData);
+                const bytes = Uint8Array.from(binary, character => character.charCodeAt(0));
+                const mimeType = metadata.match(/^data:([^;]+)/)?.[1] || 'application/pdf';
+                return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+            } catch {
+                return pdf;
+            }
         }
 
         function addArchiveCard(year, title, pdf, editors = []) {
@@ -52,7 +70,7 @@
             action.className = pdf ? 'archive-action' : 'archive-status';
             action.textContent = pdf ? 'Open PDF' : 'PDF to be added';
             if (pdf) {
-                action.href = pdf.startsWith('http') || pdf.startsWith('/') ? pdf : `/${pdf}`;
+                action.href = resolvePdfUrl(pdf);
                 action.target = '_blank';
                 action.rel = 'noopener';
             }
@@ -63,6 +81,8 @@
         const currentCard = document.createElement('article');
         currentCard.className = 'archive-card archive-card-current';
         currentCard.innerHTML = '<div class="archive-year">Current</div><h2>English Department E-Magazine</h2><p>Latest published issue.</p><a class="archive-action" href="../img/cv.pdf" target="_blank" rel="noopener">Open PDF</a>';
+        const currentPdf = localStorage.getItem('english-department-magazine-pdf');
+        if (currentPdf) currentCard.querySelector('.archive-action').href = resolvePdfUrl(currentPdf);
         archiveGrid.appendChild(currentCard);
         archiveEntries.forEach(entry => addArchiveCard(entry.year, entry.title, entry.pdf, entry.editors || []));
     </script>

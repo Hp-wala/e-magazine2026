@@ -43,22 +43,68 @@
                 </form>
                 <button id="delete-magazine-button" class="danger-button delete-magazine-button" type="button">Delete current magazine</button>
 
-                <section class="management-section" aria-labelledby="editors-title">
+                <section class="management-section" aria-labelledby="people-title">
                     <p class="eyebrow">People</p>
-                    <h2 id="editors-title">Manage Editors</h2>
-                    <p>Add, edit, or remove the names shown in the public Editors panel.</p>
+                    <h2 id="people-title">Manage People</h2>
+                    <p>Create one person record with category, role, archive year, and optional photo.</p>
                     <form id="editor-add-form" class="admin-form editor-add-form">
-                        <label for="editor-name">Editor name</label>
-                        <input id="editor-name" name="editorName" required>
-                        <button type="submit">Add editor</button>
+                        <div class="people-form-grid">
+                            <div class="people-form-field">
+                                <label for="editor-name">Person Name</label>
+                                <input id="editor-name" name="editorName" required>
+                            </div>
+                            <div class="people-form-field">
+                                <label for="editor-role">Role</label>
+                                <input id="editor-role" name="editorRole" placeholder="Editor">
+                            </div>
+                            <div class="people-form-field">
+                                <label for="editor-category">Category</label>
+                                <select id="editor-category" name="editorCategory" required></select>
+                            </div>
+                            <div class="people-form-field">
+                                <label for="editor-year">Archive Year</label>
+                                <select id="editor-year" name="editorYear" required></select>
+                            </div>
+                            <div class="people-form-field people-photo-field">
+                                <label for="editor-photo">Photo</label>
+                                <input id="editor-photo" name="editorPhoto" type="file" accept="image/*">
+                            </div>
+                            <div class="people-form-field people-photo-field">
+                                <label for="editor-photo-preview">Photo Preview</label>
+                                <img id="editor-photo-preview" class="editor-photo-preview" alt="Selected person photo">
+                            </div>
+                        </div>
+                        <div class="people-form-actions">
+                            <button id="save-person-button" type="submit">Save Person</button>
+                            <button id="cancel-person-edit" class="quiet-button" type="button">Cancel Edit</button>
+                        </div>
+                        <p id="people-status" class="form-status" role="status" aria-live="polite"></p>
                     </form>
+
+                    <div class="people-category-management">
+                        <div class="category-admin-row">
+                            <label for="category-name">Add Category</label>
+                            <input id="category-name" name="categoryName" placeholder="Category name">
+                            <button id="add-category-button" type="button">Add category</button>
+                        </div>
+                        <div id="category-admin-list" class="category-admin-list"></div>
+                    </div>
+
+                    <div class="people-list-controls">
+                        <label for="people-search">Search</label>
+                        <input id="people-search" type="search" placeholder="Search by name or role">
+                        <label for="people-category-filter">Category Filter</label>
+                        <select id="people-category-filter"></select>
+                        <label for="people-year-filter">Year Filter</label>
+                        <select id="people-year-filter"></select>
+                    </div>
                     <div id="editor-admin-list" class="editor-admin-list"></div>
                 </section>
 
                 <section class="management-section" aria-labelledby="people-photos-title">
                     <p class="eyebrow">People Directory</p>
                     <h2 id="people-photos-title">Manage Profile Photos</h2>
-                    <p>Upload a photo for each profile. Adjust the circular crop, then save it.</p>
+                    <p>Existing profile photo workflow remains compatible for stored images.</p>
                     <div id="profile-photo-admin-list" class="profile-photo-admin-list"></div>
                 </section>
 
@@ -83,8 +129,8 @@
                             </div>
                         </div>
                         <div class="archive-field archive-file-field">
-                            <label for="archive-editors">Yearly editors (comma-separated)</label>
-                            <input id="archive-editors" name="archiveEditors" placeholder="Asha Sharma, Rahul Das">
+                            <label for="archive-people-select">People for this collection</label>
+                            <textarea id="archive-people-select" class="archive-people-select" placeholder="Name — Category&#10;Name — Category"></textarea>
                         </div>
                         <button type="submit">Add magazine</button>
                         <p id="archive-upload-status" class="form-status" role="status" aria-live="polite"></p>
@@ -95,11 +141,14 @@
                             <select id="archive-delete-year" aria-label="Yearly collection to remove"></select>
                             <button id="delete-archive-button" class="danger-button" type="button">Delete collection</button>
                         </div>
-                        <label for="archive-edit-year">Select collection to edit yearly editors</label>
+                        <label for="archive-edit-year">Select collection to edit people</label>
                         <select id="archive-edit-year" aria-label="Yearly collection to edit"></select>
-                        <label for="archive-editors-edit">Editors for selected collection</label>
-                        <input id="archive-editors-edit" placeholder="Asha Sharma, Rahul Das">
-                        <button id="save-archive-editors" type="button">Save yearly editors</button>
+                        <div class="archive-editors-edit-wrap">
+                            <label for="archive-editors-edit">People for selected collection</label>
+                            <div id="archive-editors-edit" class="archive-people-list"></div>
+                            <button id="add-archive-person-button" class="quiet-button" type="button">Add Person</button>
+                        </div>
+                        <button id="save-archive-editors" type="button">Save People</button>
                     </div>
 
                     <div class="recycle-bin" aria-labelledby="recycle-bin-title">

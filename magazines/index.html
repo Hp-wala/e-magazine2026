@@ -18,17 +18,78 @@
         <section id="archive-grid" class="archive-grid" aria-label="Year-wise magazine collection"></section>
     </main>
     <script>
+        const ARCHIVE_STORAGE_KEY = 'english-department-magazine-archive';
+        const PEOPLE_STORAGE_KEY = 'english-department-people-v2';
+        const FINAL_PEOPLE_CATEGORIES = [
+            'Advisor',
+            'Teacher Members',
+            'Editor',
+            'Assistant Editor',
+            'Special Advisors',
+            'Editorial Team'
+        ];
         const defaultArchive = [
-            { year: '2026', title: '2026 Collection', pdf: 'img/cv.pdf', editors: [] }
+            { year: '2026', title: '2026 Collection', pdf: 'img/cv.pdf', people: [] }
         ];
         const archiveGrid = document.getElementById('archive-grid');
         let archiveEntries = defaultArchive;
         try {
-            const savedEntries = JSON.parse(localStorage.getItem('english-department-magazine-archive') || 'null');
-            if (Array.isArray(savedEntries)) archiveEntries = savedEntries.filter(entry => entry.year !== '2024' && entry.pdf);
+            const savedEntries = JSON.parse(localStorage.getItem(ARCHIVE_STORAGE_KEY) || 'null');
+            if (Array.isArray(savedEntries)) {
+                archiveEntries = savedEntries
+                    .filter(entry => entry && entry.year !== '2024' && entry.pdf)
+                    .map(entry => ({
+                        ...entry,
+                        people: Array.isArray(entry.people) ? entry.people : Array.isArray(entry.editors) ? entry.editors : [],
+                        editors: Array.isArray(entry.people) ? entry.people : Array.isArray(entry.editors) ? entry.editors : []
+                    }));
+            }
             if (!archiveEntries.some(entry => entry.year === '2026')) archiveEntries.unshift(defaultArchive[0]);
         } catch {
             archiveEntries = defaultArchive;
+        }
+
+        function normalizeCategoryName(category, role = '') {
+            const raw = String(category || role || 'Editorial Team').trim();
+            const lower = raw.toLowerCase();
+            const roleLower = String(role || '').trim().toLowerCase();
+
+            if (roleLower.includes('assistant editor')) return 'Assistant Editor';
+            if (roleLower.includes('special advisor')) return 'Special Advisors';
+            if (roleLower.includes('teacher member')) return 'Teacher Members';
+            if (roleLower.includes('editor')) return 'Editor';
+            if (roleLower.includes('advisor')) return 'Advisor';
+
+            if (lower === 'editorial leadership') return 'Editor';
+            if (lower === 'writers' || lower === 'designers' || lower === 'photographers' || lower === 'contributors') return 'Editorial Team';
+            if (lower === 'advisor') return 'Advisor';
+            if (lower === 'teacher members') return 'Teacher Members';
+            if (lower === 'editor') return 'Editor';
+            if (lower === 'assistant editor') return 'Assistant Editor';
+            if (lower === 'special advisors') return 'Special Advisors';
+            if (lower === 'editorial team') return 'Editorial Team';
+            return 'Editorial Team';
+        }
+
+        function normalizePeopleNamesArray(people) {
+            if (!Array.isArray(people)) return [];
+            return people.map(person => typeof person === 'string' ? person : person?.name || '').filter(Boolean);
+        }
+
+        function getPeopleLookup() {
+            try {
+                const raw = JSON.parse(localStorage.getItem(PEOPLE_STORAGE_KEY) || 'null');
+                if (!Array.isArray(raw)) return new Map();
+                const people = new Map();
+                raw.forEach(record => {
+                    if (!record || typeof record !== 'object' || !record.name) return;
+                    const category = normalizeCategoryName(record.category || record.group || 'Editorial Team', record.role || '');
+                    people.set(String(record.name), { name: String(record.name), role: String(record.role || 'Member'), category });
+                });
+                return people;
+            } catch {
+                return new Map();
+            }
         }
 
         function resolvePdfUrl(pdf) {
@@ -49,7 +110,7 @@
             }
         }
 
-        function addArchiveCard(year, title, pdf, editors = []) {
+        function addArchiveCard(year, title, pdf, people = []) {
             const card = document.createElement('article');
             card.className = 'archive-card';
             const yearLabel = document.createElement('div');
@@ -60,11 +121,40 @@
             const description = document.createElement('p');
             description.textContent = pdf ? 'Magazine PDF available.' : 'The year folder is ready for its magazine PDF.';
             card.append(yearLabel, heading, description);
-            if (editors.length) {
-                const editorLabel = document.createElement('p');
-                editorLabel.className = 'archive-editors';
-                editorLabel.textContent = `Editors: ${editors.join(', ')}`;
-                card.appendChild(editorLabel);
+
+            const peopleLookup = getPeopleLookup();
+            const safePeople = normalizePeopleNamesArray(people);
+            if (safePeople.length) {
+                const peopleLabel = document.createElement('p');
+                peopleLabel.className = 'archive-editors';
+                peopleLabel.textContent = 'People:';
+                const peopleGroups = document.createElement('div');
+                peopleGroups.className = 'archive-people-groups';
+
+                FINAL_PEOPLE_CATEGORIES.forEach(category => {
+                    const groupNames = safePeople
+                        .map(name => peopleLookup.get(name) || { name, category: 'Editorial Team' })
+                        .filter(person => normalizeCategoryName(person.category || 'Editorial Team', person.role || '') === category)
+                        .map(person => person.name);
+                    if (!groupNames.length) return;
+
+                    const cat = document.createElement('div');
+                    cat.className = 'archive-people-category';
+                    const catTitle = document.createElement('strong');
+                    catTitle.textContent = category;
+                    const list = document.createElement('ul');
+                    groupNames.forEach(name => {
+                        const item = document.createElement('li');
+                        item.textContent = name;
+                        list.appendChild(item);
+                    });
+                    cat.appendChild(catTitle);
+                    cat.appendChild(list);
+                    peopleGroups.appendChild(cat);
+                });
+
+                peopleLabel.appendChild(peopleGroups);
+                card.appendChild(peopleLabel);
             }
 
             const action = document.createElement(pdf ? 'a' : 'span');
@@ -85,7 +175,13 @@
         const currentPdf = localStorage.getItem('english-department-magazine-pdf');
         if (currentPdf) currentCard.querySelector('.archive-action').href = resolvePdfUrl(currentPdf);
         archiveGrid.appendChild(currentCard);
-        archiveEntries.forEach(entry => addArchiveCard(entry.year, entry.title, entry.pdf, entry.editors || []));
+
+        archiveEntries.forEach(entry => {
+            const selectedPeople = normalizePeopleNamesArray(
+                Array.isArray(entry.people) ? entry.people : Array.isArray(entry.editors) ? entry.editors : []
+            );
+            addArchiveCard(entry.year, entry.title, entry.pdf, selectedPeople);
+        });
     </script>
 </body>
 </html>

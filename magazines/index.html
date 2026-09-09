@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Magazine Archive | English Department</title>
-    <link rel="stylesheet" href="archive.css">
+    <link rel="stylesheet" href="archive.css?v=20260909">
 </head>
 <body>
     <main class="archive-shell">
@@ -25,7 +25,9 @@
         let archiveEntries = defaultArchive;
         try {
             const savedEntries = JSON.parse(localStorage.getItem('english-department-magazine-archive') || 'null');
-            if (Array.isArray(savedEntries)) archiveEntries = savedEntries.filter(entry => entry.year !== '2024');
+            if (Array.isArray(savedEntries)) {
+                archiveEntries = savedEntries.filter(entry => entry.year !== '2024' && entry.pdf);
+            }
         } catch {
             archiveEntries = defaultArchive;
         }

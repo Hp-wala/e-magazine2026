@@ -233,8 +233,37 @@ function getPeople() {
     return migrated;
 }
 
+function clearDataUrlPhoto(value) {
+    if (typeof value !== 'string' || !value.startsWith('data:image/')) return value || '';
+    return value.length > 220000 ? '' : value;
+}
+
+function stripDataUrlPhotosFromPeople(records) {
+    return records.map(person => {
+        if (!person || typeof person !== 'object') return person;
+        return {
+            ...person,
+            photo: clearDataUrlPhoto(person.photo)
+        };
+    });
+}
+
 function savePeople(people) {
-    localStorage.setItem(PEOPLE_STORAGE_KEY, JSON.stringify(people.map(normalizePersonRecord).filter(Boolean)));
+    const normalized = people.map(normalizePersonRecord).filter(Boolean);
+    const safePeople = stripDataUrlPhotosFromPeople(normalized);
+    const payload = JSON.stringify(safePeople);
+
+    try {
+        localStorage.setItem(PEOPLE_STORAGE_KEY, payload);
+    } catch (error) {
+        try {
+            const photoFreePeople = safePeople.map(person => ({ ...person, photo: '' }));
+            localStorage.setItem(PEOPLE_STORAGE_KEY, JSON.stringify(photoFreePeople));
+        } catch {
+            // Graceful fallback: keep the people list from crashing the admin UI.
+            return;
+        }
+    }
 }
 
 function profileKey(name) {
@@ -253,24 +282,52 @@ function saveProfilePhotos(photos) {
     localStorage.setItem(PROFILE_PHOTOS_STORAGE_KEY, JSON.stringify(photos));
 }
 
-function readImageFile(file) {
+function isPhotoDataUrl(value) {
+    return typeof value === 'string' && value.startsWith('data:image/');
+}
+
+function stripOversizedPhotosFromPeople(records) {
+    return records.map(person => {
+        if (!person || typeof person !== 'object') return person;
+        const photo = isPhotoDataUrl(person.photo) && person.photo.length > 220000 ? '' : person.photo || '';
+        return { ...person, photo };
+    });
+}
+
+function readImageFile(file, maxLength = 220000) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
             const img = new Image();
             img.onload = () => {
-                const maxWidth = 900;
-                const maxHeight = 900;
-                const scale = Math.min(1, maxWidth / img.width, maxHeight / img.height);
-                const width = Math.max(1, Math.round(img.width * scale));
-                const height = Math.max(1, Math.round(img.height * scale));
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
+                const maxWidth = 640;
+                const maxHeight = 640;
+                const baseScale = Math.min(1, maxWidth / img.width, maxHeight / img.height);
                 const mime = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-                resolve(canvas.toDataURL(mime, 0.82));
+                const candidateScales = [baseScale, 0.8, 0.65, 0.5, 0.35];
+                const candidateQualities = [0.72, 0.6, 0.48, 0.35, 0.22];
+
+                const tryCompression = (scaleIndex = 0) => {
+                    const scale = candidateScales[Math.min(scaleIndex, candidateScales.length - 1)];
+                    const width = Math.max(1, Math.round(img.width * scale));
+                    const height = Math.max(1, Math.round(img.height * scale));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const quality = candidateQualities[Math.min(scaleIndex, candidateQualities.length - 1)];
+                    const compressed = canvas.toDataURL(mime, quality);
+
+                    if (compressed.length <= maxLength || scaleIndex >= candidateScales.length - 1) {
+                        resolve(compressed.length <= maxLength ? compressed : '');
+                        return;
+                    }
+
+                    tryCompression(scaleIndex + 1);
+                };
+
+                tryCompression(0);
             };
             img.onerror = () => reject(new Error('The image could not be read.'));
             img.src = reader.result;
@@ -793,11 +850,18 @@ function getRecycleBinEntries() {
 }
 
 function saveRecycleBinEntries(entries) {
-    localStorage.setItem(RECYCLE_BIN_STORAGE_KEY, JSON.stringify(entries));
+    const safeEntries = entries.map(entry => {
+        if (!entry || typeof entry !== 'object') return entry;
+        return {
+            ...entry,
+            photo: clearDataUrlPhoto(entry.photo)
+        };
+    });
+    localStorage.setItem(RECYCLE_BIN_STORAGE_KEY, JSON.stringify(safeEntries));
 }
 
 function moveToRecycleBin(entry) {
-    const trashEntry = { ...entry, deletedAt: new Date().toISOString() };
+    const trashEntry = { ...entry, deletedAt: new Date().toISOString(), photo: clearDataUrlPhoto(entry.photo) };
     saveRecycleBinEntries([...getRecycleBinEntries(), trashEntry]);
 }
 

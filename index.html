@@ -921,12 +921,11 @@ It reflects our cultural spirit where students weave words into stories, poems, 
         function normalizePublicPerson(person) {
             if (!person || typeof person !== 'object') return null;
             const role = String(person.role || 'Member');
-            const photo = String(person.photo || '');
             return {
                 name: String(person.name || ''),
                 role,
                 category: normalizeCategoryName(person.category || person.group || 'Editorial Team', role),
-                photo: photo.startsWith('data:') ? '' : photo
+                photo: ''
             };
         }
 
@@ -975,22 +974,7 @@ It reflects our cultural spirit where students weave words into stories, poems, 
         }
 
         function getSavedProfilePhoto(person) {
-            try {
-                const key = getPersonKey(person.name);
-                const saved = JSON.parse(localStorage.getItem(PEOPLE_PHOTOS_KEY) || '{}')[key];
-                if (saved && saved.photo && !String(saved.photo).startsWith('data:')) {
-                    return { src: saved.photo, zoom: saved.zoom || 1, x: saved.x ?? 50, y: saved.y ?? 50 };
-                }
-                if (person.photo && String(person.photo).trim().length && !String(person.photo).startsWith('data:')) {
-                    return { src: person.photo, zoom: 1, x: 50, y: 50 };
-                }
-                return { src: '', zoom: 1, x: 50, y: 50 };
-            } catch {
-                if (person.photo && String(person.photo).trim().length && !String(person.photo).startsWith('data:')) {
-                    return { src: person.photo, zoom: 1, x: 50, y: 50 };
-                }
-                return { src: '', zoom: 1, x: 50, y: 50 };
-            }
+            return { src: '', zoom: 1, x: 50, y: 50 };
         }
 
         function closePeopleDirectory() {

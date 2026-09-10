@@ -173,13 +173,12 @@ function normalizePersonRecord(person) {
     if (!person || typeof person !== 'object') return null;
     const role = String(person.role || 'Member');
     const category = normalizeCategoryName(person.category || person.group || 'Editorial Team', role);
-    const photo = String(person.photo || person.image || '');
     const record = {
         id: person.id || profileKey(person.name || 'person-' + Date.now()),
         name: String(person.name || ''),
         role,
         category,
-        photo: photo.startsWith('data:') ? '' : photo,
+        photo: '',
         archiveYear: person.archiveYear || person.year || '',
         status: person.status || 'active'
     };

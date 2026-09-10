@@ -925,7 +925,7 @@ It reflects our cultural spirit where students weave words into stories, poems, 
                 name: String(person.name || ''),
                 role,
                 category: normalizeCategoryName(person.category || person.group || 'Editorial Team', role),
-                photo: ''
+                photo: typeof person.photo === 'string' ? person.photo.trim() : ''
             };
         }
 
@@ -974,7 +974,9 @@ It reflects our cultural spirit where students weave words into stories, poems, 
         }
 
         function getSavedProfilePhoto(person) {
-            return { src: '', zoom: 1, x: 50, y: 50 };
+            const photo = typeof person?.photo === 'string' ? person.photo.trim() : '';
+            if (!photo) return { src: '', zoom: 1, x: 50, y: 50 };
+            return { src: photo, zoom: 1, x: 50, y: 50 };
         }
 
         function closePeopleDirectory() {

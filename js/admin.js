@@ -178,7 +178,7 @@ function normalizePersonRecord(person) {
         name: String(person.name || ''),
         role,
         category,
-        photo: '',
+        photo: typeof person.photo === 'string' ? person.photo : '',
         archiveYear: person.archiveYear || person.year || '',
         status: person.status || 'active'
     };
@@ -264,6 +264,7 @@ function readImageFile(file) {
 
 function renderProfilePhotoAdmin() {
     const list = document.getElementById('profile-photo-admin-list');
+    if (!list) return;
     const storedPhotos = getProfilePhotos();
     list.replaceChildren();
     const people = getPeople();
@@ -275,7 +276,7 @@ function renderProfilePhotoAdmin() {
 
         const preview = document.createElement('img');
         preview.className = 'profile-photo-preview';
-        preview.src = saved.photo || person.photo || makeInitialAvatarSource(person.name);
+        preview.src = makeInitialAvatarSource(person.name);
         preview.alt = `${person.name} preview`;
         preview.style.objectPosition = `${saved.x ?? 50}% ${saved.y ?? 50}%`;
         preview.style.transform = `scale(${saved.zoom || 1})`;
@@ -331,7 +332,7 @@ function renderProfilePhotoAdmin() {
             if (!file) return;
             if (!file.type.startsWith('image/')) return showStatus('Please choose an image file.', true);
             const reader = new FileReader();
-            reader.onload = () => { preview.src = reader.result; };
+            reader.onload = () => { preview.src = makeInitialAvatarSource(person.name); };
             reader.readAsDataURL(file);
         });
         saveButton.addEventListener('click', async () => {
@@ -340,8 +341,7 @@ function renderProfilePhotoAdmin() {
             saveButton.textContent = 'Saving...';
             showStatus(`Saving ${person.name} profile photo...`);
             try {
-                let photo = saved.photo || '';
-                if (file) photo = await readImageFile(file);
+                const photo = '';
                 const photos = getProfilePhotos();
                 photos[key] = { photo, zoom: Number(zoomInput.value), x: Number(positionInput.value), y: Number(verticalInput.value) };
                 saveProfilePhotos(photos);
@@ -531,8 +531,8 @@ function openPersonEditorForm(person, collectionYear = '') {
         yearSelect.value = yearSelect.options[0].value;
     }
 
-    photoPreview.src = person.photo || makeInitialAvatarSource(person.name);
-    photoInput.dataset.existingPhoto = person.photo || '';
+    photoPreview.src = makeInitialAvatarSource(person.name);
+    photoInput.dataset.existingPhoto = '';
     saveButton.textContent = 'Update Person';
     form.dataset.editingPersonId = person.id;
 

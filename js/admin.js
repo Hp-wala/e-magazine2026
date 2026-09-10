@@ -256,7 +256,25 @@ function saveProfilePhotos(photos) {
 function readImageFile(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
+        reader.onload = () => {
+            const img = new Image();
+            img.onload = () => {
+                const maxWidth = 900;
+                const maxHeight = 900;
+                const scale = Math.min(1, maxWidth / img.width, maxHeight / img.height);
+                const width = Math.max(1, Math.round(img.width * scale));
+                const height = Math.max(1, Math.round(img.height * scale));
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                const mime = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+                resolve(canvas.toDataURL(mime, 0.82));
+            };
+            img.onerror = () => reject(new Error('The image could not be read.'));
+            img.src = reader.result;
+        };
         reader.onerror = () => reject(new Error('The image could not be read.'));
         reader.readAsDataURL(file);
     });
@@ -739,7 +757,17 @@ function attachPersonToArchiveYear(person) {
     const entries = getArchiveEntries();
     const entry = entries.find(item => item.year === person.archiveYear);
     if (!entry) {
-        return { ok: false, message: `Archive collection for ${person.archiveYear} does not exist. Person saved in People Management only.` };
+        const newEntry = {
+            year: person.archiveYear,
+            title: `${person.archiveYear} Collection`,
+            pdf: '',
+            people: [person.name],
+            editors: [person.name]
+        };
+        entries.push(newEntry);
+        saveArchiveEntries(entries);
+        renderArchiveDeleteOptions();
+        return { ok: true, message: `${person.name} saved and ${person.archiveYear} collection created.` };
     }
 
     const people = Array.isArray(entry.people) ? entry.people : [];
@@ -1168,64 +1196,77 @@ document.getElementById('editor-add-form').addEventListener('submit', async even
     const archiveYear = document.getElementById('editor-year').value;
     const photoInput = document.getElementById('editor-photo');
     const photoPreview = document.getElementById('editor-photo-preview');
+    const saveButton = document.getElementById('save-person-button');
     const editingId = event.target.dataset.editingPersonId || profileKey(name);
     if (!name || !category) {
         showStatus('Please complete person name and category.', true);
         return;
     }
 
-    const people = getPeople();
-    const existing = people.find(person => person.id === editingId || person.name === name);
-    let photo = existing?.photo || '';
+    saveButton.disabled = true;
+    saveButton.textContent = 'Saving...';
 
-    if (photoInput.files && photoInput.files[0]) {
-        try {
-            photo = await readImageFile(photoInput.files[0]);
-        } catch (error) {
-            showStatus(error.message || 'Unable to read photo.', true);
-            return;
+    try {
+        const people = getPeople();
+        const existing = people.find(person => person.id === editingId || person.name === name);
+        let photo = existing?.photo || '';
+
+        if (photoInput.files && photoInput.files[0]) {
+            try {
+                photo = await readImageFile(photoInput.files[0]);
+            } catch (error) {
+                saveButton.disabled = false;
+                saveButton.textContent = 'Save Person';
+                showStatus(error.message || 'Unable to read photo.', true);
+                return;
+            }
         }
+
+        const record = {
+            id: existing?.id || profileKey(name) || crypto?.randomUUID?.() || String(Date.now()),
+            name,
+            role: role || 'Member',
+            category,
+            photo,
+            archiveYear,
+            status: 'active'
+        };
+
+        if (existing) {
+            Object.assign(existing, record);
+        } else {
+            people.push(record);
+        }
+
+        savePeople(people);
+        saveEditors(people.map(person => person.name));
+
+        const archiveAssignment = attachPersonToArchiveYear(record);
+
+        renderPeopleAdmin();
+        renderCategoryAdmin();
+        renderCategorySelects();
+        renderArchiveDeleteOptions();
+        renderArchivePeopleCheckboxes('archive-people-select');
+        renderArchiveCollectionPeopleList();
+        renderProfilePhotoAdmin();
+        event.target.reset();
+        photoPreview.removeAttribute('src');
+        event.target.dataset.editingPersonId = '';
+
+        if (!archiveAssignment.ok) {
+            showStatus(archiveAssignment.message, true);
+        } else {
+            showStatus('Person saved successfully.');
+        }
+
+        saveButton.textContent = 'Save Person';
+        saveButton.disabled = false;
+    } catch (error) {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Save Person';
+        showStatus(error.message || 'Could not save this person.', true);
     }
-
-    const record = {
-        id: existing?.id || profileKey(name) || crypto?.randomUUID?.() || String(Date.now()),
-        name,
-        role: role || 'Member',
-        category,
-        photo,
-        archiveYear,
-        status: 'active'
-    };
-
-    if (existing) {
-        Object.assign(existing, record);
-    } else {
-        people.push(record);
-    }
-
-    savePeople(people);
-    saveEditors(people.map(person => person.name));
-
-    const archiveAssignment = attachPersonToArchiveYear(record);
-
-    renderPeopleAdmin();
-    renderCategoryAdmin();
-    renderCategorySelects();
-    renderArchiveDeleteOptions();
-    renderArchivePeopleCheckboxes('archive-people-select');
-    renderArchiveCollectionPeopleList();
-    renderProfilePhotoAdmin();
-    event.target.reset();
-    photoPreview.removeAttribute('src');
-    event.target.dataset.editingPersonId = '';
-
-    if (!archiveAssignment.ok) {
-        showStatus(archiveAssignment.message, true);
-    } else {
-        showStatus('Person saved successfully.');
-    }
-
-    document.getElementById('save-person-button').textContent = 'Save Person';
 });
 
 document.getElementById('archive-add-form').addEventListener('submit', async event => {

@@ -19,8 +19,7 @@ const PROFILE_PHOTOS_STORAGE_KEY = 'english-department-profile-photos';
 const FINAL_PEOPLE_CATEGORIES = [
     'Advisor',
     'Teacher Members',
-    'Editor',
-    'Assistant Editor',
+    'Editor and Assistant Editor',
     'Special Advisors',
     'Editorial Team'
 ];
@@ -123,24 +122,28 @@ function getDefaultCategories() {
     return FINAL_PEOPLE_CATEGORIES;
 }
 
-function normalizeCategoryName(category, role = '') {
+function isProtectedEditorPair(name = '') {
+    const target = String(name || '').trim();
+    return target === 'Violina Deka' || target === 'Trisha Hazarika';
+}
+
+function normalizeCategoryName(category, role = '', name = '') {
+    if (isProtectedEditorPair(name)) return 'Editor and Assistant Editor';
+
     const raw = String(category || role || 'Editorial Team').trim();
     const lower = raw.toLowerCase();
     const roleLower = String(role || '').trim().toLowerCase();
 
-    if (roleLower.includes('assistant editor')) return 'Assistant Editor';
     if (roleLower.includes('special advisor')) return 'Special Advisors';
-    if (roleLower.includes('editor')) return 'Editor';
     if (roleLower.includes('teacher member')) return 'Teacher Members';
     if (roleLower.includes('advisor')) return 'Advisor';
-
-    if (lower === 'editorial leadership') return 'Editor';
+    if (lower === 'editor and assistant editor') return 'Editor and Assistant Editor';
+    if (lower === 'editorial leadership') return 'Editor and Assistant Editor';
     if (lower === 'writers' || lower === 'designers' || lower === 'photographers' || lower === 'contributors') return 'Editorial Team';
 
     if (raw === 'Advisor') return 'Advisor';
     if (raw === 'Teacher Members') return 'Teacher Members';
-    if (raw === 'Editor') return 'Editor';
-    if (raw === 'Assistant Editor') return 'Assistant Editor';
+    if (raw === 'Editor and Assistant Editor') return 'Editor and Assistant Editor';
     if (raw === 'Special Advisors') return 'Special Advisors';
     if (raw === 'Editorial Team') return 'Editorial Team';
 
@@ -171,8 +174,9 @@ function saveCategories(categories) {
 
 function normalizePersonRecord(person) {
     if (!person || typeof person !== 'object') return null;
+    const name = String(person.name || '');
     const role = String(person.role || 'Member');
-    const category = normalizeCategoryName(person.category || person.group || 'Editorial Team', role);
+    const category = normalizeCategoryName(person.category || person.group || 'Editorial Team', role, name);
     const record = {
         id: person.id || profileKey(person.name || 'person-' + Date.now()),
         name: String(person.name || ''),

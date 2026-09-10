@@ -816,8 +816,7 @@ It reflects our cultural spirit where students weave words into stories, poems, 
         const FINAL_PEOPLE_CATEGORIES = [
             'Advisor',
             'Teacher Members',
-            'Editor',
-            'Assistant Editor',
+            'Editor and Assistant Editor',
             'Special Advisors',
             'Editorial Team'
         ];
@@ -840,15 +839,10 @@ It reflects our cultural spirit where students weave words into stories, poems, 
                 ]
             },
             {
-                group: 'Editor',
+                group: 'Editor and Assistant Editor',
                 people: [
-                    { name: 'Violina Deka', role: 'Editor', category: 'Editor', photo: 'img/imgechoes-thought.jpeg' }
-                ]
-            },
-            {
-                group: 'Assistant Editor',
-                people: [
-                    { name: 'Trisha Hazarika', role: 'Assistant Editor', category: 'Assistant Editor', photo: 'img/e.jpeg' }
+                    { name: 'Violina Deka', role: 'Editor', category: 'Editor and Assistant Editor', photo: 'img/imgechoes-thought.jpeg' },
+                    { name: 'Trisha Hazarika', role: 'Assistant Editor', category: 'Editor and Assistant Editor', photo: 'img/e.jpeg' }
                 ]
             },
             {
@@ -896,23 +890,26 @@ It reflects our cultural spirit where students weave words into stories, poems, 
             return String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         }
 
-        function normalizeCategoryName(category, role = '') {
+        function isProtectedEditorPair(name = '') {
+            const target = String(name || '').trim();
+            return target === 'Violina Deka' || target === 'Trisha Hazarika';
+        }
+
+        function normalizeCategoryName(category, role = '', name = '') {
+            if (isProtectedEditorPair(name)) return 'Editor and Assistant Editor';
+
             const raw = String(category || role || 'Editorial Team').trim();
             const lower = raw.toLowerCase();
             const roleLower = String(role || '').trim().toLowerCase();
 
-            if (roleLower.includes('assistant editor')) return 'Assistant Editor';
             if (roleLower.includes('special advisor')) return 'Special Advisors';
             if (roleLower.includes('teacher member')) return 'Teacher Members';
-            if (roleLower.includes('editor')) return 'Editor';
             if (roleLower.includes('advisor')) return 'Advisor';
-
-            if (lower === 'editorial leadership') return 'Editor';
+            if (lower === 'editor and assistant editor') return 'Editor and Assistant Editor';
+            if (lower === 'editorial leadership') return 'Editor and Assistant Editor';
             if (lower === 'writers' || lower === 'designers' || lower === 'photographers' || lower === 'contributors') return 'Editorial Team';
             if (lower === 'advisor') return 'Advisor';
             if (lower === 'teacher members') return 'Teacher Members';
-            if (lower === 'editor') return 'Editor';
-            if (lower === 'assistant editor') return 'Assistant Editor';
             if (lower === 'special advisors') return 'Special Advisors';
             if (lower === 'editorial team') return 'Editorial Team';
             return 'Editorial Team';
@@ -920,12 +917,14 @@ It reflects our cultural spirit where students weave words into stories, poems, 
 
         function normalizePublicPerson(person) {
             if (!person || typeof person !== 'object') return null;
+            const rawName = String(person.name || '').trim();
             const role = String(person.role || 'Member');
+            const category = normalizeCategoryName(person.category || person.group || 'Editorial Team', role, rawName);
             return {
-                name: String(person.name || ''),
+                name: rawName,
                 role,
-                category: normalizeCategoryName(person.category || person.group || 'Editorial Team', role),
-                photo: typeof person.photo === 'string' ? person.photo.trim() : ''
+                category,
+                photo: ''
             };
         }
 
@@ -974,9 +973,7 @@ It reflects our cultural spirit where students weave words into stories, poems, 
         }
 
         function getSavedProfilePhoto(person) {
-            const photo = typeof person?.photo === 'string' ? person.photo.trim() : '';
-            if (!photo) return { src: '', zoom: 1, x: 50, y: 50 };
-            return { src: photo, zoom: 1, x: 50, y: 50 };
+            return { src: '', zoom: 1, x: 50, y: 50 };
         }
 
         function closePeopleDirectory() {

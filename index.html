@@ -826,45 +826,58 @@ It reflects our cultural spirit where students weave words into stories, poems, 
             {
                 group: 'Advisor',
                 people: [
-                    { name: 'Dr. Montu Saikia', role: 'Advisor', category: 'Advisor' }
+                    { name: 'Dr. Montu Saikia', role: 'Advisor', category: 'Advisor', photo: 'img/whispers-of-poetry.jpeg' }
                 ]
             },
             {
                 group: 'Teacher Members',
                 people: [
-                    { name: 'Dr. Pulak Deka', role: 'Teacher Member', category: 'Teacher Members' },
-                    { name: 'Dimpi Basistha', role: 'Teacher Member', category: 'Teacher Members' },
-                    { name: 'Pallab Jyoti Sarma', role: 'Teacher Member', category: 'Teacher Members' },
-                    { name: 'Ruchika Kashyap', role: 'Teacher Member', category: 'Teacher Members' },
-                    { name: 'Surashree Baruah', role: 'Teacher Member', category: 'Teacher Members' }
+                    { name: 'Dr. Pulak Deka', role: 'Teacher Member', category: 'Teacher Members', photo: 'img/e.jpeg' },
+                    { name: 'Dimpi Basistha', role: 'Teacher Member', category: 'Teacher Members', photo: 'img/imgechoes-thought.jpeg' },
+                    { name: 'Pallab Jyoti Sarma', role: 'Teacher Member', category: 'Teacher Members', photo: 'img/statuswindow_landing_page.jpg' },
+                    { name: 'Ruchika Kashyap', role: 'Teacher Member', category: 'Teacher Members', photo: 'img/imgechoes-of-thought.png' },
+                    { name: 'Surashree Baruah', role: 'Teacher Member', category: 'Teacher Members', photo: 'img/whispers-of-poetry.jpeg' }
                 ]
             },
             {
                 group: 'Editor',
                 people: [
-                    { name: 'Violina Deka', role: 'Editor', category: 'Editor' }
+                    { name: 'Violina Deka', role: 'Editor', category: 'Editor', photo: 'img/imgechoes-thought.jpeg' }
                 ]
             },
             {
                 group: 'Assistant Editor',
                 people: [
-                    { name: 'Trisha Hazarika', role: 'Assistant Editor', category: 'Assistant Editor' }
+                    { name: 'Trisha Hazarika', role: 'Assistant Editor', category: 'Assistant Editor', photo: 'img/e.jpeg' }
                 ]
             },
             {
                 group: 'Special Advisors',
                 people: [
-                    { name: 'Hrisikesh Sarma', role: 'Special Advisor to Editor', category: 'Special Advisors' },
-                    { name: 'Irfan Farhad', role: 'Special Advisor to Editor', category: 'Special Advisors' }
+                    { name: 'Hrisikesh Sarma', role: 'Special Advisor to Editor', category: 'Special Advisors', photo: 'img/statuswindow_landing_page.jpg' },
+                    { name: 'Irfan Farhad', role: 'Special Advisor to Editor', category: 'Special Advisors', photo: 'img/imgechoes-of-thought.png' }
                 ]
             },
             {
                 group: 'Editorial Team',
                 people: [
-                    'Himadri Kumar', 'Kuntala Baharali', 'Mridushmita Kumar', 'Mrinmoy Sarma', 'Ritul Das',
-                    'Priti Deka', 'Parbin Sultana', 'Bhitali Kashyap', 'Maromi Sultana', 'Khusi Devi',
-                    'Mandip Rajbongshi', 'Birina Sarania', 'Sumiya Hiussain', 'Dipjyoti Kakati', 'Amrita Das', 'Tonmoy Nath'
-                ].map(name => ({ name, role: 'Editorial Team', category: 'Editorial Team' }))
+                    ['Himadri Kumar', 'img/whispers-of-poetry.jpeg'],
+                    ['Kuntala Baharali', 'img/e.jpeg'],
+                    ['Mridushmita Kumar', 'img/imgechoes-thought.jpeg'],
+                    ['Mrinmoy Sarma', 'img/imgechoes-of-thought.png'],
+                    ['Ritul Das', 'img/statuswindow_landing_page.jpg'],
+                    ['Priti Deka', 'img/whispers-of-poetry.jpeg'],
+                    ['Parbin Sultana', 'img/e.jpeg'],
+                    ['Bhitali Kashyap', 'img/imgechoes-of-thought.png'],
+                    ['Maromi Sultana', 'img/whispers-of-poetry.jpeg'],
+                    ['Khusi Devi', 'img/imgechoes-thought.jpeg'],
+                    ['Mandip Rajbongshi', 'img/e.jpeg'],
+                    ['Birina Sarania', 'img/imgechoes-of-thought.png'],
+                    ['Sumiya Hiussain', 'img/statuswindow_landing_page.jpg'],
+                    ['Dipjyoti Kakati', 'img/whispers-of-poetry.jpeg'],
+                    ['Amrita Das', 'img/e.jpeg'],
+                    ['Tonmoy Nath', 'img/imgechoes-thought.jpeg']
+                ].map(([name, photo]) => ({ name, role: 'Editorial Team', category: 'Editorial Team', photo }))
             }
         ];
 
@@ -908,11 +921,12 @@ It reflects our cultural spirit where students weave words into stories, poems, 
         function normalizePublicPerson(person) {
             if (!person || typeof person !== 'object') return null;
             const role = String(person.role || 'Member');
+            const photo = String(person.photo || '');
             return {
                 name: String(person.name || ''),
                 role,
                 category: normalizeCategoryName(person.category || person.group || 'Editorial Team', role),
-                photo: String(person.photo || '')
+                photo: photo.startsWith('data:') ? '' : photo
             };
         }
 
@@ -964,15 +978,15 @@ It reflects our cultural spirit where students weave words into stories, poems, 
             try {
                 const key = getPersonKey(person.name);
                 const saved = JSON.parse(localStorage.getItem(PEOPLE_PHOTOS_KEY) || '{}')[key];
-                if (saved && saved.photo) {
+                if (saved && saved.photo && !String(saved.photo).startsWith('data:')) {
                     return { src: saved.photo, zoom: saved.zoom || 1, x: saved.x ?? 50, y: saved.y ?? 50 };
                 }
-                if (person.photo && String(person.photo).trim().length) {
+                if (person.photo && String(person.photo).trim().length && !String(person.photo).startsWith('data:')) {
                     return { src: person.photo, zoom: 1, x: 50, y: 50 };
                 }
                 return { src: '', zoom: 1, x: 50, y: 50 };
             } catch {
-                if (person.photo && String(person.photo).trim().length) {
+                if (person.photo && String(person.photo).trim().length && !String(person.photo).startsWith('data:')) {
                     return { src: person.photo, zoom: 1, x: 50, y: 50 };
                 }
                 return { src: '', zoom: 1, x: 50, y: 50 };
